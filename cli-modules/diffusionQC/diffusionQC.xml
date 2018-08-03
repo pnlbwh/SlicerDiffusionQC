@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Diffusion.Utilities.WIP</category>
+  <category>Diffusion.Process</category>
   <title>diffusionQC</title>
   <description><![CDATA[TBD]]></description>
   <version>0.1</version>
