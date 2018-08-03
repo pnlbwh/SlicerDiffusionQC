@@ -73,6 +73,8 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 6. Sylvain told to write data as out.csv instead of .txt as of now
 
+7. Show progress bar during gradient_process (takes 52s) and saveResults (takes 36s). Durations are on Tashrif's workstation.
+
 
 
 
