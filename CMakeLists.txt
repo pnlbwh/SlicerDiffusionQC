@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(TashrifTools)
+project(SlicerDiffusionQC)
 
 #-----------------------------------------------------------------------------
 # Extension meta-information
-set(EXTENSION_HOMEPAGE "http://slicer.org/slicerWiki/index.php/Documentation/Nightly/Extensions/TashrifTools")
-set(EXTENSION_CATEGORY "Diffusion")
-set(EXTENSION_CONTRIBUTORS "John Doe (AnyWare Corp.)")
-set(EXTENSION_DESCRIPTION "This is an example of a simple extension")
-set(EXTENSION_ICONURL "http://www.example.com/Slicer/Extensions/TashrifTools.png")
-set(EXTENSION_SCREENSHOTURLS "http://www.example.com/Slicer/Extensions/TashrifTools/Screenshots/1.png")
+set(EXTENSION_HOMEPAGE "http://slicer.org/slicerWiki/index.php/Documentation/Nightly/Extensions/SlicerDiffusionQC")
+set(EXTENSION_CATEGORY "Diffusion.Process")
+set(EXTENSION_CONTRIBUTORS "Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)")
+set(EXTENSION_DESCRIPTION "A complete slicer module for quality checking of diffusion weighted MRI")
+set(EXTENSION_ICONURL "http://www.example.com/Slicer/Extensions/SlicerDiffusionQC.png")
+set(EXTENSION_SCREENSHOTURLS "http://www.example.com/Slicer/Extensions/SlicerDiffusionQC/Screenshots/1.png")
 set(EXTENSION_DEPENDS "NA") # Specified as a space separated string, a list or 'NA' if any
 
 #-----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ include(${Slicer_USE_FILE})
 #-----------------------------------------------------------------------------
 # Extension modules
 add_subdirectory(GradQC)
-add_subdirectory(diffusionQCCLI)
+add_subdirectory(cli-modules)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
