@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Diffusion.Utilities.WIP</category>
+  <title>diffusionQC</title>
+  <description><![CDATA[TBD]]></description>
+  <version>0.1</version>
+  <documentation-url>http://dmri.slicer.org</documentation-url>
+  <license/>
+  <contributor>Tashrif Billah, Isaiah Norton</contributor>
+  <acknowledgements><![CDATA[TBD]]></acknowledgements>
+  
+  <parameters>
+  
+    <label>Input and Output</label>
+    <description><![CDATA[Input/output parameters]]></description>
+    
+	<file>
+      <name>input</name>
+      <longflag>input</longflag>
+      <label>Input DWI Volume</label>
+      <channel>input</channel>
+      <description><![CDATA[Input Diffusion Weighted Image (NRRD) path]]></description>
+    </file>
+	
+	<file>
+      <name>mask</name>
+      <longflag>mask</longflag>
+      <label>Input Mask of the DWI</label>
+      <channel>input</channel>
+      <description><![CDATA[Mask of Input Diffusion Weighted Image path]]></description>
+    </file>
+	    
+	<directory>
+      <name>out</name>
+      <longflag>out</longflag>
+      <label>Output directory</label>
+      <channel>out</channel>
+      <description><![CDATA[Path to results file]]></description>
+    </directory>
+
+	<boolean>
+      <name>auto</name>
+      <longflag>auto</longflag>
+      <label>Automatic mode specifier</label>
+      <channel>input</channel>
+      <description><![CDATA[Automatic/visual processing]]></description>
+      <default>True</default>
+    </boolean>
+	
+  </parameters>
+	  
+</executable>
