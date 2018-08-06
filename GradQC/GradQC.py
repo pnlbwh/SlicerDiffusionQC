@@ -127,12 +127,32 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     # self.layout.addStretch(1) # TODO: space not working
 
     #
+    # Reset Result Button
+    #
+    self.resetResultsButton = qt.QPushButton("Reset Results")
+    self.resetResultsButton.toolTip = "Reset to machine learning results."
+    self.resetResultsButton.enabled = True
+    processFormLayout.addRow(self.resetResultsButton)
+
+
+    #
+    # Decision collapsible area
+    #
+    processCollapsibleButton = ctk.ctkCollapsibleButton()
+    processCollapsibleButton.text = "Decision"
+    self.layout.addWidget(processCollapsibleButton)
+
+    # Layout within the processing collapsible button
+    decisionFormLayout = qt.QFormLayout(processCollapsibleButton)
+
+
+    #
     # Discard Gradient Button
     #
     self.discardButton = qt.QPushButton("Discard")
     self.discardButton.toolTip = "Discard the current gradient."
     self.discardButton.enabled = True
-    processFormLayout.addRow(self.discardButton)
+    decisionFormLayout.addRow(self.discardButton)
 
     #
     # Keep Gradient Button
@@ -140,7 +160,12 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.keepButton = qt.QPushButton("Keep")
     self.keepButton.toolTip = "Keep the current gradient."
     self.keepButton.enabled = True
-    processFormLayout.addRow(self.keepButton)
+    decisionFormLayout.addRow(self.keepButton)
+
+    # TODO: Make discard and keep button to appear side by side
+
+    # Add vertical space
+    # self.layout.addStretch(1) # TODO: space not working
 
     #
     # Make it sure Button
@@ -148,7 +173,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.sureButton = qt.QPushButton("Sure")
     self.sureButton.toolTip = "Make it sure."
     self.sureButton.enabled = True
-    processFormLayout.addRow(self.sureButton)
+    decisionFormLayout.addRow(self.sureButton)
 
     #
     # Make it unsure Button
@@ -156,10 +181,12 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.unsureButton = qt.QPushButton("Unsure")
     self.unsureButton.toolTip = "Make it unsure."
     self.unsureButton.enabled = True
-    processFormLayout.addRow(self.unsureButton)
+    decisionFormLayout.addRow(self.unsureButton)
 
-    # TODO: Make discard and keep button to appear side by side
-    # TODO: Introduce sure/unsure user button
+    # TODO: Make sure and unsure button to appear side by side
+
+    # Add vertical space
+    # self.layout.addStretch(1) # TODO: space not working
 
     #
     # Next Review Button
@@ -167,16 +194,19 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.nextReviewButton = qt.QPushButton("Next Review")
     self.nextReviewButton.toolTip = "Pull up the next gradient for review."
     self.nextReviewButton.enabled = True
-    processFormLayout.addRow(self.nextReviewButton)
+    decisionFormLayout.addRow(self.nextReviewButton)
 
 
     #
-    # Reset Result Button
+    # Finish collapsible area
     #
-    self.resetResultsButton = qt.QPushButton("Reset Results")
-    self.resetResultsButton.toolTip = "Reset to machine learning results."
-    self.resetResultsButton.enabled = True
-    processFormLayout.addRow(self.resetResultsButton)
+    processCollapsibleButton = ctk.ctkCollapsibleButton()
+    processCollapsibleButton.text = "Finish"
+    self.layout.addWidget(processCollapsibleButton)
+
+    # Layout within the processing collapsible button
+    finishFormLayout = qt.QFormLayout(processCollapsibleButton)
+
 
     # Add vertical space
     # self.layout.addStretch(1) # TODO: space not working
@@ -186,7 +216,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.saveResultsButton = qt.QPushButton("Save")
     self.saveResultsButton.toolTip = "Save the results."
     self.saveResultsButton.enabled = True
-    processFormLayout.addRow(self.saveResultsButton)
+    finishFormLayout.addRow(self.saveResultsButton)
 
 
     # connections

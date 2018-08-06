@@ -5,7 +5,6 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # diffusionQC is added to python search directory
-# from qclib.dwi_attributes import dwi_attributes
 from qclib.saveResults import saveResults
 from qclib.gradient_process import process
 
@@ -48,20 +47,7 @@ class QC(cli.Application):
         self.mask= str(self.mask)
         self.out= str(self.out)
 
-        # TODO: Check if mask exists, take necessary steps
-        KLdiv, good_bad, confidence, hdr, mri, grad_axis= process(self.dwi, self.mask)
-
-        # Save QC results
-        if self.out== 'None':
-            directory = os.path.dirname(os.path.abspath(self.dwi))
-        else:
-            directory= self.out
-
-        # Extract prefix from dwi
-        prefix = os.path.basename(self.dwi.split('.')[0])
-
-        # Pass prefix and directory to saveResults()
-        saveResults(prefix, directory, good_bad, KLdiv, confidence, hdr, mri, grad_axis, self.autoMode)
+        process(self.dwi, self.mask, self.out, self.autoMode)
 
 
 if __name__ == '__main__':

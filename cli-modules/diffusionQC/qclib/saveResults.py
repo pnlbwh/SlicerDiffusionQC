@@ -1,25 +1,16 @@
 import numpy as np
-# import pandas as pd
 import nrrd
 import os
 
 
 def saveDecisions(prefix, directory, deletion):
 
-    # fix pandas for Slicer Python 2.7
-    # df= pd.DataFrame({'Gradient #':[i for i in range(len(deletion))],'Pass 1, Fail 0':deletion})
-    # df.to_csv(os.path.join(directory, prefix+'_QC.csv'), index= False)
-
-    # instead we can write as a .txt file
-    f = open(os.path.join(directory, prefix+'_QC.txt'), "w")
-    f.write('Gradient labels: Pass 1, Fail 0\n\n')
+    f = open(os.path.join(directory, prefix+'_QC.csv'), "w")
+    f.write('Gradient #, Pass 1\Fail 0\n')
     for i in range(len(deletion)):
-        f.write('Gradient # '+ str(i) + ': ' + str(deletion[i]) + '\n')
+        f.write(str(i) + ',' + str(deletion[i]) + '\n')
 
     f.close()
-
-    # TODO: Sylvain told to save as a .csv file
-
 
 
 def saveTemporary(prefix, directory, deletion, KLdiv, confidence):
@@ -68,9 +59,12 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
 
 def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
 
+    # In automode, writes out the modified dwi image
     if autoMode:
         saveDecisions(prefix, directory, deletion)
         saveDWI(prefix, directory, deletion, hdr, mri, grad_axis)
+
+    # In visualmode, writes out only the temporary results
     else:
         saveTemporary(prefix, directory, deletion, KLdiv, confidence)
 

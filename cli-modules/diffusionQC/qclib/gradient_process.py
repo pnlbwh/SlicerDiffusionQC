@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 import warnings
 with warnings.catch_warnings():
@@ -9,6 +10,7 @@ with warnings.catch_warnings():
 import time
 import multiprocessing
 from qclib.dwi_attributes import dwi_attributes
+from qclib.saveResults import saveResults
 
 
 POINTS = 50 # For KDE estimation
@@ -21,14 +23,14 @@ T = 400  # Number of non zero values in the mask for the corresponding slice to 
 def load_mask(mask):
 
     if mask:
-        img = nib.load(str(mask))  # MRI loaded as a 256 x 256 x 176 volume
+        img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
     else:
         pass
         # TODO: look for files ending with mask.extension, otherwise create one
 
 def extract_feature(volume, *args):
-    mu = np.mean(volume)
+
     sig = np.median(abs(volume - np.median(volume))) / 0.6745
 
     if not args:
@@ -91,15 +93,42 @@ def find_b_shell(scaled_b_values):
 
 def grad_process(grad_id):
 
-    I= np.take(mri, grad_id, axis= grad_axis)
+    # load the specific volume
+    if grad_axis == 0:
+        I = mri[grad_id, :, :, :]
+
+    elif grad_axis == 1:
+        I = mri[:, grad_id, :, :]
+
+    elif grad_axis == 2:
+        I = mri[:, :, grad_id, :]
+
+    elif grad_axis == 3:
+        I = mri[:, :, :, grad_id]
+
 
     sim = np.zeros(M.shape[slice_axis] - 1, dtype='float')
     for n in range(M.shape[slice_axis] - 1):
 
-        s1= np.take(I, n, axis= slice_axis)
-        s2= np.take(I, n+1, axis= slice_axis)
-        m1= np.take(M, n, axis= slice_axis)
-        m2= np.take(M, n+1, axis= slice_axis)
+        # load two consecutive slices and their masks
+        if slice_axis == 0:
+            s1 = I[n, :, :]
+            s2 = I[n + 1, :, :]
+            m1 = M[n, :, :]
+            m2 = M[n + 1, :, :]
+
+        elif slice_axis == 1:
+            s1 = I[:, n, :]
+            s2 = I[:, n + 1, :]
+            m1 = M[:, n, :]
+            m2 = M[:, n + 1, :]
+
+        elif slice_axis == 2:
+            s1 = I[:, :, n]
+            s2 = I[:, :, n + 1]
+            m1 = M[:, :, n]
+            m2 = M[:, :, n + 1]
+
 
         if np.count_nonzero(m1) < T or np.count_nonzero(m2) < T:
             sim[n] = 0
@@ -123,7 +152,7 @@ def grad_process(grad_id):
 
 
 
-def process(dwiPath, maskPath):
+def process(dwiPath, maskPath, outDir, autoMode):
 
     global mri, M, grad_axis, slice_axis
 
@@ -209,4 +238,14 @@ def process(dwiPath, maskPath):
             confidence[k]= 0
 
 
-    return S, good_bad, confidence, hdr, mri, grad_axis
+    # Save QC results
+    if outDir == 'None':
+        directory = os.path.dirname(os.path.abspath(dwiPath))
+    else:
+        directory = outDir
+
+    # Extract prefix from dwi
+    prefix = os.path.basename(dwiPath.split('.')[0])
+
+    # Pass prefix and directory to saveResults()
+    saveResults(prefix, directory, good_bad, S, confidence, hdr, mri, grad_axis, autoMode)
