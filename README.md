@@ -40,6 +40,12 @@ The following are example command line calls-
 Saves inputPrefix_modified.nrrd and inputPrefix_QC.txt
 
 # For Slicer GUI manual processing:
+
+First, add the paths on Slicer>Edit>Application Settings>Modules>Additional module paths:
+
+/home/pnl/Downloads/SlicerDiffusionQC/GradQC
+/home/pnl/Downloads/SlicerDiffusionQC/cli-modules/diffusionQC
+
 The XML wrapper makes following command line calls and creates temporary files as explained below:
 
 `python ./diffusionQC_real.py -i path/to/input.nrrd -m path/to/mask.nrrd`
