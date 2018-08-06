@@ -69,9 +69,9 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 4. The controls buttons have to be properly grouped
 
-5. Speed up using named-tuple inside [gradient_process](https://github.com/pnlbwh/SlicerDiffusionQC/blob/tashrif-built/cli-modules/diffusionQC/qclib/gradient_process.py) instead of class being used now.
+5. (DONE) Speed up using named-tuple inside [gradient_process](https://github.com/pnlbwh/SlicerDiffusionQC/blob/tashrif-built/cli-modules/diffusionQC/qclib/gradient_process.py) instead of class being used now. Now, it takes 4s for gradient_process which is same as that of raw version.
 
-6. Sylvain told to write data as out.csv instead of .txt as of now
+6. (DONE) Sylvain told to write data as out.csv instead of .txt as of now 
 
 7. Show progress bar during gradient_process (takes 52s) and saveResults (takes 36s). Durations are on Tashrif's workstation.
 
