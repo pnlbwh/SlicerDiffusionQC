@@ -5,9 +5,9 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # diffusionQC is added to python search directory
-from qclib.dwi_attributes import dwi_attributes
+# from qclib.dwi_attributes import dwi_attributes
 from qclib.saveResults import saveResults
-from qclib.gradient_process import calc
+from qclib.gradient_process import process
 
 
 class QC(cli.Application):
@@ -48,10 +48,8 @@ class QC(cli.Application):
         self.mask= str(self.mask)
         self.out= str(self.out)
 
-        hdr, mri, grad_axis, axialViewAxis, b_value, gradients = dwi_attributes(self.dwi)
         # TODO: Check if mask exists, take necessary steps
-        KLdiv, good_bad, confidence= calc().process(hdr, mri, grad_axis, b_value, gradients, self.mask, axialViewAxis)
-
+        KLdiv, good_bad, confidence, hdr, mri, grad_axis= process(self.dwi, self.mask)
 
         # Save QC results
         if self.out== 'None':

@@ -226,7 +226,6 @@ class slicerGUI():
 
       self.summaryUpdate()
 
-  # TODO: sureGradient, unsureGradient (should be identical copy of pass fail)
 
   # Getting specific point ID from table
   # Switching among gradients

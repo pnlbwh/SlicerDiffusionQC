@@ -8,6 +8,7 @@ with warnings.catch_warnings():
 
 import time
 import multiprocessing
+from qclib.dwi_attributes import dwi_attributes
 
 
 POINTS = 50 # For KDE estimation
@@ -86,165 +87,126 @@ def find_b_shell(scaled_b_values):
     return b_shell
 
 
-class calc( ):
-
-    def grad_process(self, grad_id):
-        # load the specific gradient
-        # if self.grad_axis == 0:
-        #     I = self.mri[grad_id, :, :, :]
-        #
-        # elif self.grad_axis == 1:
-        #     I = self.mri[:, grad_id, :, :]
-        #
-        # elif self.grad_axis == 2:
-        #     I = self.mri[:, :, grad_id, :]
-        #
-        # elif self.grad_axis == 3:
-        #     I = self.mri[:, :, :, grad_id]
-
-        I= np.take(self.mri, grad_id, axis= self.grad_axis)
-
-        sim = np.zeros(self.M.shape[self.slice_axis] - 1, dtype='float')
-        for n in range(self.M.shape[self.slice_axis] - 1):
-
-            # load two consecutive slices and their masks
-            # if self.slice_axis == 0:
-            #     s1 = I[n, :, :]
-            #     s2 = I[n + 1, :, :]
-            #     m1 = self.M[n, :, :]
-            #     m2 = self.M[n + 1, :, :]
-            #
-            # elif self.slice_axis == 1:
-            #     s1 = I[:, n, :]
-            #     s2 = I[:, n + 1, :]
-            #     m1 = self.M[:, n, :]
-            #     m2 = self.M[:, n + 1, :]
-            #
-            # elif self.slice_axis == 2:
-            #     s1 = I[:, :, n]
-            #     s2 = I[:, :, n + 1]
-            #     m1 = self.M[:, :, n]
-            #     m2 = self.M[:, :, n + 1]
-
-            s1= np.take(I, n, axis= self.slice_axis)
-            s2= np.take(I, n+1, axis= self.slice_axis)
-            m1= np.take(self.M, n, axis= self.slice_axis)
-            m2= np.take(self.M, n+1, axis= self.slice_axis)
-
-            if np.count_nonzero(m1) < T or np.count_nonzero(m2) < T:
-                sim[n] = 0
-                continue
-
-            r1 = s1[m1 == 1]
-            r2 = s2[m2 == 1]
 
 
-            if r1.max() > r2.max():
-                f1, x, bw = extract_feature(r1)  # Find the bins, bw for the 1st slice
-                f2, _, _ = extract_feature(r2, x, bw)  # Use the same bins, bw to calculate KDE for the 2nd slice
-            else:
-                f1, x, bw = extract_feature(r2)  # Find the bins, bw for the 1st slice
-                f2, _, _ = extract_feature(r1, x, bw)  # Use the same bins, bw to calculate KDE for the 2nd slice
+def grad_process(grad_id):
 
-            sim[n] = 0.5 * (KL(f1, f2) + KL(f2, f1))
+    I= np.take(mri, grad_id, axis= grad_axis)
+
+    sim = np.zeros(M.shape[slice_axis] - 1, dtype='float')
+    for n in range(M.shape[slice_axis] - 1):
+
+        s1= np.take(I, n, axis= slice_axis)
+        s2= np.take(I, n+1, axis= slice_axis)
+        m1= np.take(M, n, axis= slice_axis)
+        m2= np.take(M, n+1, axis= slice_axis)
+
+        if np.count_nonzero(m1) < T or np.count_nonzero(m2) < T:
+            sim[n] = 0
+            continue
+
+        r1 = s1[m1 == 1]
+        r2 = s2[m2 == 1]
 
 
-        return sim
+        if r1.max() > r2.max():
+            f1, x, bw = extract_feature(r1)  # Find the bins, bw for the 1st slice
+            f2, _, _ = extract_feature(r2, x, bw)  # Use the same bins, bw to calculate KDE for the 2nd slice
+        else:
+            f1, x, bw = extract_feature(r2)  # Find the bins, bw for the 1st slice
+            f2, _, _ = extract_feature(r1, x, bw)  # Use the same bins, bw to calculate KDE for the 2nd slice
+
+        sim[n] = 0.5 * (KL(f1, f2) + KL(f2, f1))
+
+
+    return sim
 
 
 
-    def process(self, hdr, diffusionVolume, gradAxis, b_value, gradients, mask, axialViewAxis):
+def process(dwiPath, maskPath):
 
-        # global definitions, attributes shared among functions and processes
-        self.mri= diffusionVolume
-        self.grad_axis= gradAxis
-        self.slice_axis= axialViewAxis
-        self.M = load_mask(mask)
+    global mri, M, grad_axis, slice_axis
 
-
-        start_time = time.time()
-
-        pool = multiprocessing.Pool()  # Use all available cores, otherwise specify the number you want as an argument
-
-        res = pool.map_async(self.grad_process, range(self.mri.shape[self.grad_axis]))
-
-        # The output is a (# gradients x # valid slices-1) array
-        S = res.get()  # when pool.map_async
-        # S= res # when pool.map
-
-        pool.close()
-        pool.join()
-
-        # # Debugging code below, replaces the above multiprocessing
-        # # Slicer Python raises various errors while Anaconda works fine
-        # S= np.zeros((self.mri.shape[self.grad_axis], self.mri.shape[self.slice_axis]-1), dtype= float)
-        # for i in range(self.mri.shape[self.grad_axis]):
-        #     S[i,: ]= self.grad_process(i)
-        # # Debugging code ends
+    hdr, mri, grad_axis, slice_axis, b_value, gradients = dwi_attributes(dwiPath)
+    # global definitions, attributes shared among functions and processes
+    M= load_mask(maskPath)
 
 
-        S = np.array(S)
+    start_time = time.time()
 
-        # Calculating scaled b values
-        scaled_b_values = np.zeros(self.mri.shape[self.grad_axis], dtype=float)
-        for i in range(self.mri.shape[self.grad_axis]):
-            scaled_b_values[i] = b_value * np.linalg.norm(gradients[i, :]) ** 2
+    pool = multiprocessing.Pool()  # Use all available cores, otherwise specify the number you want as an argument
 
-        # Finding b-shell
-        b_shell = find_b_shell(scaled_b_values.copy())
+    res = pool.map_async(grad_process, range(mri.shape[grad_axis]))
 
-        # Finding median among the gradients in the same b-shell
-        da = np.zeros(np.shape(S), dtype='float')
-        dr = np.zeros(np.shape(S), dtype='float')
+    # The output is a (# gradients x # valid slices-1) array
+    S = res.get()  # when pool.map_async
+    # S= res # when pool.map
 
-        # For each value in the b-shell, the median should be a (1 x # valid slices-1) array
-        for b in b_shell:
+    pool.close()
+    pool.join()
 
-            if b == -1:
-                same_shell_mask = (scaled_b_values > group[0]) & (scaled_b_values < group[1])
-            else:
-                same_shell_mask = (scaled_b_values >= b * (1 - percentage)) & (scaled_b_values <= b * (1 + percentage))
+    S = np.array(S)
 
-            if np.count_nonzero(same_shell_mask) < 2:
-                ref = [0.01] * S.shape[1]
-            else:
-                # Find ref(b,n) for all the gradients in the same b shell
-                ref = np.median(S[same_shell_mask, :], axis=0)
+    # Calculating scaled b values
+    scaled_b_values = np.zeros(mri.shape[grad_axis], dtype=float)
+    for i in range(mri.shape[grad_axis]):
+        scaled_b_values[i] = b_value * np.linalg.norm(gradients[i, :]) ** 2
 
-            for n in range(S.shape[1]):
+    # Finding b-shell
+    b_shell = find_b_shell(scaled_b_values.copy())
 
-                if not ref[n]:
-                    ref[n] = eps  # To prevent divide by zero
+    # Finding median among the gradients in the same b-shell
+    da = np.zeros(np.shape(S), dtype='float')
+    dr = np.zeros(np.shape(S), dtype='float')
 
-                da[same_shell_mask, n] = S[same_shell_mask, n] - ref[n]
-                dr[same_shell_mask, n] = da[same_shell_mask, n] / ref[n]
+    # For each value in the b-shell, the median should be a (1 x # valid slices-1) array
+    for b in b_shell:
 
+        if b == -1:
+            same_shell_mask = (scaled_b_values > group[0]) & (scaled_b_values < group[1])
+        else:
+            same_shell_mask = (scaled_b_values >= b * (1 - percentage)) & (scaled_b_values <= b * (1 + percentage))
 
-        print("Elapsed time is ", time.time() - start_time, " seconds")
+        if np.count_nonzero(same_shell_mask) < 2:
+            ref = [0.01] * S.shape[1]
+        else:
+            # Find ref(b,n) for all the gradients in the same b shell
+            ref = np.median(S[same_shell_mask, :], axis=0)
 
-        # Discard some slices at the beginning and at the end for not having significant voxels
-        # We are keeping 'end' one less because we don't want to go beyond the last slice that satisfies the area condition
-        start = 2
-        end = self.M.shape[self.slice_axis] - 3
+        for n in range(S.shape[1]):
 
-        da[:, 0:start] = -1
-        da[:, end:self.M.shape[self.slice_axis]] = -1
-        dr[:, 0:start] = -1
-        dr[:, end:self.M.shape[self.slice_axis]] = -1
+            if not ref[n]:
+                ref[n] = eps  # To prevent divide by zero
 
-        QC = np.zeros((S.shape[0], 2), dtype='float')
-        good_bad = np.ones(gradients.shape[0], dtype=int)
-        confidence= np.ones(gradients.shape[0], dtype=int)
-        for k in range(S.shape[0]):
-            QC[k, :] = [max(da[k, :]), max(dr[k, :])]
-
-            # Good/bad gradients
-            if QC[k, 0] >= 0.15 or QC[k, 1] >= 10:
-                good_bad[k] = 0
-
-            # Sure/unsure classification
-            if (QC[k, 0] >= 0.05 and QC[k, 0]<= 0.3) and (QC[k, 1] >= 5 and QC[k, 0]<= 20):
-                confidence[k]= 0
+            da[same_shell_mask, n] = S[same_shell_mask, n] - ref[n]
+            dr[same_shell_mask, n] = da[same_shell_mask, n] / ref[n]
 
 
-        return S, good_bad, confidence
+    print("Elapsed time is ", time.time() - start_time, " seconds")
+
+    # Discard some slices at the beginning and at the end for not having significant voxels
+    # We are keeping 'end' one less because we don't want to go beyond the last slice that satisfies the area condition
+    start = 2
+    end = M.shape[slice_axis] - 3
+
+    da[:, 0:start] = -1
+    da[:, end:M.shape[slice_axis]] = -1
+    dr[:, 0:start] = -1
+    dr[:, end:M.shape[slice_axis]] = -1
+
+    QC = np.zeros((S.shape[0], 2), dtype='float')
+    good_bad = np.ones(gradients.shape[0], dtype=int)
+    confidence= np.ones(gradients.shape[0], dtype=int)
+    for k in range(S.shape[0]):
+        QC[k, :] = [max(da[k, :]), max(dr[k, :])]
+
+        # Good/bad gradients
+        if QC[k, 0] >= 0.15 or QC[k, 1] >= 10:
+            good_bad[k] = 0
+
+        # Sure/unsure classification
+        if (QC[k, 0] >= 0.05 and QC[k, 0]<= 0.3) and (QC[k, 1] >= 5 and QC[k, 0]<= 20):
+            confidence[k]= 0
+
+
+    return S, good_bad, confidence, hdr, mri, grad_axis
