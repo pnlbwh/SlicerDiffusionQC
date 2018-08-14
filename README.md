@@ -44,6 +44,7 @@ Saves inputPrefix_modified.nrrd and inputPrefix_QC.txt
 First, add the paths on Slicer>Edit>Application Settings>Modules>Additional module paths:
 
 /home/pnl/Downloads/SlicerDiffusionQC/GradQC
+
 /home/pnl/Downloads/SlicerDiffusionQC/cli-modules/diffusionQC
 
 The XML wrapper makes following command line calls and creates temporary files as explained below:
@@ -84,6 +85,9 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 8. Isaiah noted a changed TBD in [diffusionQC.xml](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/cli-modules/diffusionQC/diffusionQC.xml)
 
 9. Isaiah wants to put some GUI tests [here](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/Testing/Python/CMakeLists.txt)
+
+10. Minor BUG in SlicerUserInteraction.py, Ln 239 
+`every time selectionChanged(), gradientUpdate() is called twice`
 
 
 

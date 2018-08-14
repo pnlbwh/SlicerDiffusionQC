@@ -11,6 +11,9 @@ from qclib.saveResults import saveResults
 
 import numpy as np
 
+FAIL= '\tFail' # \t is for visually separating fail gradients
+UNSURE= '\tUnsure' # \t is for visually separating Unsure gradients
+
 class slicerGUI():
 
   def slicerUserInterface(self, userDWIpath, userDWInode, label, summary,
@@ -23,7 +26,8 @@ class slicerGUI():
     self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
     self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
 
-    self.backUp= self.deletion.copy()
+    self.qualityBackUp= self.deletion.copy()
+    self.confidenceBackUp= self.confidence.copy()
     self.dwiNode= userDWInode
     self.decisionLabel= label
     self.summaryLabel= summary
@@ -55,9 +59,10 @@ class slicerGUI():
     table.SetNumberOfRows(self.KLdiv.shape[0])
     for i in range(self.KLdiv.shape[0]):
 
+      # To prevent the gradient index confuse with row number '{:10}'.format(i)
       table.SetValue(i, 0, '{:10}'.format(i))
-      table.SetValue(i, 1, 'Pass' if self.deletion[i] else 'Fail')
-      table.SetValue(i, 2, 'Sure' if self.confidence[i] else 'Unsure')
+      table.SetValue(i, 1, 'Pass' if self.deletion[i] else FAIL)
+      table.SetValue(i, 2, 'Sure' if self.confidence[i] else UNSURE)
       table.SetValue(i, 3, 'X' if not self.deletion[i] else ' ')
 
     currentLayout = slicer.app.layoutManager().layout
@@ -176,7 +181,7 @@ class slicerGUI():
       self.deletion[diffusion_index]= 0 # bad ones are marked with 0
 
       table = self.tableNode.GetTable()
-      table.SetValue(diffusion_index, 1, 'Fail')
+      table.SetValue(diffusion_index, 1, FAIL)
       table.SetValue(diffusion_index, 3, 'X')
       self.tableNode.Modified()
 
@@ -204,7 +209,7 @@ class slicerGUI():
       self.confidence[diffusion_index]= 0 # unsure ones are marked with 0
 
       table = self.tableNode.GetTable()
-      table.SetValue(diffusion_index, 2, 'Unsure')
+      table.SetValue(diffusion_index, 2, UNSURE)
       self.tableNode.Modified()
 
       self.summaryUpdate()
@@ -227,12 +232,19 @@ class slicerGUI():
   # Switching among gradients
   def gradientUpdate(self):
 
-      arr = self.dwiNode.GetDiffusionWeightedVolumeDisplayNode()
       index = self.tableHandle.selectedIndexes()[0]
       diffusion_index = index.row( )-1
 
+
+      # Probable BUG: every time selectionChanged(), gradientUpdate() is called twice
+      # That means all the work below are done twice for no reason
+      # The following print statement is for debugging
+      # print("Index ", diffusion_index)
+
+
       # The following line sets appropriate gradient
-      self.plotUpdate(diffusion_index) # Label update is done inside this function
+      if diffusion_index >= 0:
+        self.plotUpdate(diffusion_index) # Label update is done inside this function
 
   def plotUpdate(self, diffusion_index):
 
@@ -243,10 +255,10 @@ class slicerGUI():
       arr = self.dwiNode.GetDiffusionWeightedVolumeDisplayNode()
       arr.SetDiffusionComponent(diffusion_index)
 
-      q= 'Pass' if self.deletion[diffusion_index] else 'Fail'
-      c= 'Sure' if self.confidence[diffusion_index] else 'Unsure'
-      self.decisionLabel.setText("Displaying gradient # "+str(diffusion_index)+' , '+
-                    "Quality: "+ q +' , '+ "Confidence: "+ c)
+      q= 'Pass' if self.deletion[diffusion_index] else FAIL
+      c= 'Sure' if self.confidence[diffusion_index] else UNSURE
+      self.decisionLabel.setText("Displaying gradient # "+str(diffusion_index)+' ,\t'+
+                    "Quality: "+ q +' ,\t'+ "Confidence: "+ c)
 
       # The following code is for making a plot
       # Create table with slice index, and divergence value
@@ -266,11 +278,12 @@ class slicerGUI():
     for i in range(self.KLdiv.shape[0]):
 
       table.SetValue(i, 0, i)
-      table.SetValue(i, 1, 'Pass' if self.backUp[i] else 'Fail')
-      table.SetValue(i, 3, 'X' if not self.backUp[i] else ' ')
+      table.SetValue(i, 1, 'Pass' if self.qualityBackUp[i] else FAIL)
+      table.SetValue(i, 2, 'Sure' if self.confidenceBackUp[i] else UNSURE)
+      table.SetValue(i, 3, 'X' if not self.qualityBackUp[i] else ' ')
 
     self.tableNode.Modified()
-    self.deletion= self.backUp.copy()
+    self.deletion= self.qualityBackUp.copy()
     self.plotUpdate(0)
     self.summaryUpdate()
 
@@ -294,5 +307,5 @@ class slicerGUI():
 
   def summaryUpdate(self):
     self.summaryLabel.setText("Total gradients "+str(len(self.deletion))+
-                              ", # of fails "+ str(len(np.where(self.deletion==0)[0]))+
-                              ", # of unsures " + str(len(np.where(self.confidence == 0)[0])))
+                              ",\t\t# of fails "+ str(len(np.where(self.deletion==0)[0]))+
+                              ",\t# of unsures " + str(len(np.where(self.confidence == 0)[0])))

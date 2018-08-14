@@ -93,6 +93,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # Layout within the processing collapsible button
     processFormLayout = qt.QFormLayout(processCollapsibleButton)
+    processFormLayout.setSpacing(10)
 
     #
     # Visual Mode
@@ -122,6 +123,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     #
     self.decisionLabel = qt.QLabel("Gradient information")
     self.decisionLabel.setToolTip("Machine learning decision for current gradient on display")
+    self.decisionLabel.setStyleSheet("font: bold")
     processFormLayout.addWidget(self.decisionLabel)
 
     #
@@ -129,6 +131,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     #
     self.summaryLabel = qt.QLabel("QC summary")
     self.summaryLabel.setToolTip("Quality check summary")
+    self.summaryLabel.setStyleSheet("font: bold")
     processFormLayout.addWidget(self.summaryLabel)
 
     # Add vertical space
@@ -152,15 +155,9 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # Layout within the processing collapsible button
     decisionFormLayout = qt.QFormLayout(processCollapsibleButton)
-
-
-    #
-    # Discard Gradient Button
-    #
-    self.discardButton = qt.QPushButton("Discard")
-    self.discardButton.toolTip = "Discard the current gradient."
-    self.discardButton.enabled = True
-    decisionFormLayout.addRow(self.discardButton)
+    decisionFormLayout.setSpacing(10)
+    # -------------------------------------------------------------------------
+    qualityPanel = qt.QHBoxLayout()
 
     #
     # Keep Gradient Button
@@ -168,12 +165,23 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.keepButton = qt.QPushButton("Keep")
     self.keepButton.toolTip = "Keep the current gradient."
     self.keepButton.enabled = True
-    decisionFormLayout.addRow(self.keepButton)
+    qualityPanel.addWidget(self.keepButton)
 
-    # TODO: Make discard and keep button to appear side by side
+    #
+    # Discard Gradient Button
+    #
+    self.discardButton = qt.QPushButton("Discard")
+    self.discardButton.toolTip = "Discard the current gradient."
+    self.discardButton.enabled = True
+    self.discardButton.setStyleSheet("background-color: red")
+    qualityPanel.addWidget(self.discardButton)
 
-    # Add vertical space
-    # self.layout.addStretch(1) # TODO: space not working
+    decisionFormLayout.addRow(qualityPanel)
+    # -------------------------------------------------------------------------
+
+
+    # -------------------------------------------------------------------------
+    confidencePanel = qt.QHBoxLayout()
 
     #
     # Make it sure Button
@@ -181,20 +189,18 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.sureButton = qt.QPushButton("Sure")
     self.sureButton.toolTip = "Make it sure."
     self.sureButton.enabled = True
-    decisionFormLayout.addRow(self.sureButton)
+    confidencePanel.addWidget(self.sureButton)
 
-    #
     # Make it unsure Button
     #
     self.unsureButton = qt.QPushButton("Unsure")
     self.unsureButton.toolTip = "Make it unsure."
     self.unsureButton.enabled = True
-    decisionFormLayout.addRow(self.unsureButton)
+    self.unsureButton.setStyleSheet("background-color: yellow")
+    confidencePanel.addWidget(self.unsureButton)
 
-    # TODO: Make sure and unsure button to appear side by side
-
-    # Add vertical space
-    # self.layout.addStretch(1) # TODO: space not working
+    decisionFormLayout.addRow(confidencePanel)
+    # -------------------------------------------------------------------------
 
     #
     # Next Review Button
@@ -215,9 +221,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     # Layout within the processing collapsible button
     finishFormLayout = qt.QFormLayout(processCollapsibleButton)
 
-
-    # Add vertical space
-    # self.layout.addStretch(1) # TODO: space not working
     #
     # Save Result Button
     #
