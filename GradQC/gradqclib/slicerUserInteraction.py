@@ -147,7 +147,7 @@ class slicerGUI():
 
   # Getting specific point ID from graph
   # Switching among slices
-  def sliceUpdate(self,None,dataPointID):
+  def sliceUpdate(self,_,dataPointID):
 
     res = self.dwiNode.GetSpacing()[2]  # The 2 corresponds to axial view (check if we need to soft code)
     org = self.dwiNode.GetOrigin()[2]  # The 2 corresponds to axial view (check if we need to soft code)
