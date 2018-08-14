@@ -30,7 +30,7 @@ Switches:
     -o, --out VALUE:str                 output directory (default: input dwi directory)
 ```
 
-The following are example command line calls-
+The following are example command line calls:
 
 # For automatic processing:
 `python ./diffusionQC_real.py -i path/to/input.nrrd -m path/to/mask.nrrd -auto`
