@@ -19,13 +19,21 @@ class GradQC(ScriptedLoadableModule):
     self.parent.title = "GradQC"
     self.parent.categories = ["Diffusion.Process"]
     self.parent.dependencies = [ ]
-    self.parent.contributors = ["Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)"] # replace with "Firstname Lastname (Organization)"
+    self.parent.contributors = ["Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)"]
     self.parent.helpText = """
-      A complete slicer module for quality checking of diffusion weighted MRI
+      This is a complete slicer module for quality checking of diffusion weighted MRI. It 
+      identifies bad gradients by comparing distance of each gradient to a median line obtained from 
+      KL divergences between consecutive slices. After the above processing, it allows user to manually 
+      review each gradient, keep, or discard them.
+      
       """
     self.parent.helpText += self.getDefaultModuleDocumentationLink()
     self.parent.acknowledgementText = """
-      This MATLAB code was originally developed by a group under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School
+      A similar software based on MATLAB environment was earlier developed by a group 
+      under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School. 
+      The MATLAB SignalDropQCTool is available at https://github.com/pnlbwh/SignalDropQCTool
+      The SlicerDiffusionQC is a faster, cleaner, and more user oriented version of that software.
+      
       """
 
 #
@@ -234,10 +242,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
   def onSelectMask(self):
 
-    # Load mask into slicer
-    # _, self.maskNode = slicer.util.loadVolume(self.maskSelector.currentPath, returnNode=True)
-
-    # Instead, we want to load mask as labelmap outline
+    # We want to load mask as labelmap outline
     _, self.maskNode = slicer.util.loadLabelVolume(self.maskSelector.currentPath, returnNode=True)
     slicer.util.getNode('vtkMRMLSliceNodeRed').SetUseLabelOutline(1)
     slicer.util.getNode('vtkMRMLSliceNodeYellow').SetUseLabelOutline(1)
@@ -247,11 +252,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     for sliceViewName in layoutManager.sliceViewNames():
       sliceLogic = layoutManager.sliceWidget(sliceViewName).sliceLogic()
       compositeNode = sliceLogic.GetSliceCompositeNode()
-
-      # Set foreground and background views
-      # compositeNode.SetForegroundVolumeID(self.maskNode.GetID())
-      # compositeNode.SetBackgroundVolumeID(self.dwiNode.GetID())
-
       compositeNode.SetSliceIntersectionVisibility(1)
 
     self.applyButton.enabled = self.inputSelector.currentPath \
@@ -263,8 +263,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     _, self.dwiNode= slicer.util.loadVolume(self.inputSelector.currentPath, returnNode= True)
     self.dwiNode.GetDiffusionWeightedVolumeDisplayNode().InterpolateOff() # RA's prefer looking at the image this way
 
-    # # Node name is just filename w/o extension (getting manually)
-    # self.dwiNode = getNode(os.path.basename(self.inputSelector.currentPath).split('.')[0])
 
     self.outputDirSelector.currentPath= os.path.dirname(self.inputSelector.currentPath)
     self.applyButton.enabled = self.inputSelector.currentPath \
@@ -293,7 +291,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     # if result files exist already, don't call cli-module again
     files= os.listdir(os.path.dirname(self.inputSelector.currentPath))
     resultsExist= 0
-    success= 0 # eventually, we want to set it to zero, hacked until we have an error catching mechanism out of the cli-module below
+    success= 0
     for f in files:
       if f.endswith('QC.npy') or f.endswith('confidence.npy') or f.endswith('KLdiv.npy'):
         resultsExist+=1
@@ -307,21 +305,10 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
         completion= slicer.cli.runSync(diffusionQCcli, None, parameters)
         success= not(completion.GetStatus()== completion.CompletedWithErrors)
 
-      # The following wouldn't work because we are jumping between Pythons
-      # try:
-      #   diffusionQCcli = slicer.modules.diffusionqc
-      #   slicer.cli.runSync(diffusionQCcli, None, parameters)
-      #   success= 1
-      # except:
-      #   # An error catching mechanism out of the above step, if error happens, set success= 0, then GUI won't be pulled up
-      #   success= 0
-      #   print(sys.exc_info()[0])
-      #   # standard error is already displayed on Slicer log
-
 
     # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
     if success and self.autoMode:
       slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.dwiNode, self.decisionLabel,
-                                    self.summaryLabel, self.discardButton, self.keepButton,
+                                      self.summaryLabel, self.discardButton, self.keepButton,
                                       self.sureButton, self.unsureButton,
-                                    self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)
+                                      self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)

@@ -67,9 +67,6 @@ def KL(P, Q):
     P = P + eps
     Q = Q + eps
 
-    # P/=sum(P)
-    # Q/=sum(Q)
-
     return np.sum([P[i] * np.log(P[i] / Q[i]) for i in range(len(P))])
 
 

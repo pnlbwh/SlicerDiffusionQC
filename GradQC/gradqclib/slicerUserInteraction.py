@@ -4,7 +4,8 @@ import os
 import sys
 
 # adding diffusionQC to python search directory
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'cli-modules', 'diffusionQC')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             '..', '..', 'cli-modules', 'diffusionQC')))
 from qclib.dwi_attributes import dwi_attributes
 from qclib.saveResults import saveResults
 
@@ -83,12 +84,6 @@ class slicerGUI():
 
     graphTable.SetNumberOfRows(self.KLdiv.shape[1])
 
-    # Instead of the following, see self.plotUpdate(0) code below
-    # Displaying 0th gradient graph as default
-    # for i in range(self.KLdiv.shape[1]):
-    #   # Filling up row wise
-    #   graphTable.SetValue(i, 0, i)
-    #   graphTable.SetValue(i, 1, self.KLdiv[0, i])
 
     # Create a plot series nodes
     plotSeriesNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLPlotSeriesNode", "KL div")
@@ -119,7 +114,7 @@ class slicerGUI():
     plotWidget = layoutManager.plotWidget(0)
     plotViewNode = plotWidget.mrmlPlotViewNode()
     plotViewNode.SetPlotChartNodeID(plotChartNode.GetID())
-    plotViewNode.SetInteractionMode(1) # select points mode
+    plotViewNode.SetInteractionMode(plotViewNode.InteractionModeSelectPoints) # select points mode
 
     # Graph display finished -------------------------------------------------------------
 
@@ -152,16 +147,17 @@ class slicerGUI():
 
   # Getting specific point ID from graph
   # Switching among slices
-  def sliceUpdate(self,a,b):
+  def sliceUpdate(self,None,dataPointID):
 
     res = self.dwiNode.GetSpacing()[2]  # The 2 corresponds to axial view (check if we need to soft code)
     org = self.dwiNode.GetOrigin()[2]  # The 2 corresponds to axial view (check if we need to soft code)
     axialView = slicer.util.getNode('vtkMRMLSliceNodeRed')
 
-    if not b.GetNumberOfItems( ):
+    if not dataPointID.GetNumberOfItems( ):
+      # if no point is selected, do nothing
       return
     else:
-      array= b.GetItemAsObject(0)
+      array= dataPointID.GetItemAsObject(0)
       slice_index = array.GetValue(0)
 
       # The following lines set appropriate slice in the axial view only
