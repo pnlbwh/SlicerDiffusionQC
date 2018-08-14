@@ -30,7 +30,7 @@ Switches:
     -o, --out VALUE:str                 output directory (default: input dwi directory)
 ```
 
-The following are example command line calls-
+The following are example command line calls:
 
 # For automatic processing:
 `python ./diffusionQC_real.py -i path/to/input.nrrd -m path/to/mask.nrrd -auto`
@@ -81,9 +81,9 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 7. Show progress bar during gradient_process (takes 52s) and saveResults (takes 36s). Durations are on Tashrif's workstation.
 
+8. Isaiah noted a changed TBD in [diffusionQC.xml](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/cli-modules/diffusionQC/diffusionQC.xml)
 
-
-
+9. Isaiah wants to put some GUI tests [here](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/Testing/Python/CMakeLists.txt)
 
 
 
