@@ -83,7 +83,7 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 8. Isaiah noted a changed TBD in [diffusionQC.xml](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/cli-modules/diffusionQC/diffusionQC.xml)
 
-
+9. Isaiah wants to put some GUI tests [here](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/Testing/Python/CMakeLists.txt)
 
 
 
