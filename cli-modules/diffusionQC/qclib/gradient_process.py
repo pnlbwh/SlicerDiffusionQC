@@ -90,6 +90,7 @@ def find_b_shell(scaled_b_values):
 
 def grad_process(grad_id):
 
+    print("Processing gradient {}/{} ...".format(grad_id+1,totalGradients))
     # load the specific volume
     if grad_axis == 0:
         I = mri[grad_id, :, :, :]
@@ -151,15 +152,17 @@ def grad_process(grad_id):
 
 def process(dwiPath, maskPath, outDir, autoMode):
 
-    global mri, M, grad_axis, slice_axis
+    global mri, M, grad_axis, slice_axis, totalGradients
 
     hdr, mri, grad_axis, slice_axis, b_value, gradients = dwi_attributes(dwiPath)
+    totalGradients= gradients.shape[0]
     # global definitions, attributes shared among functions and processes
     M= load_mask(maskPath)
 
 
     start_time = time.time()
 
+    print("\n\nCalculating KL divergences ...\n\n")
     pool = multiprocessing.Pool()  # Use all available cores, otherwise specify the number you want as an argument
 
     res = pool.map_async(grad_process, range(mri.shape[grad_axis]))
@@ -208,7 +211,7 @@ def process(dwiPath, maskPath, outDir, autoMode):
             dr[same_shell_mask, n] = da[same_shell_mask, n] / ref[n]
 
 
-    print("Elapsed time is ", time.time() - start_time, " seconds")
+    print("\n\nElapsed time in calculation %s seconds\n\n" %(time.time() - start_time))
 
     # Discard some slices at the beginning and at the end for not having significant voxels
     # We are keeping 'end' one less because we don't want to go beyond the last slice that satisfies the area condition

@@ -1,6 +1,7 @@
 import numpy as np
 import nrrd
 import os
+import time
 
 
 def saveDecisions(prefix, directory, deletion):
@@ -45,8 +46,8 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
             'DWMRI_gradient_' + '{:04}'.format(ind)]
 
 
-
     # Now delete the rest of the gradients
+    # print("\n\nDeleting bad gradients ...\n\n")
     for ind in range(mri_out.shape[grad_axis], mri_in.shape[grad_axis]):
         # Python 3.6 (Anaconda)
         # del hdr_out['keyvaluepairs']['DWMRI_gradient_' + f'{ind:04}']
@@ -54,8 +55,11 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
         # Python 2.7 (Slicer)
         del hdr_out['keyvaluepairs']['DWMRI_gradient_' + '{:04}'.format(ind)]
 
+    print("Saving modified diffusion weighted MRI ...\n\n")
+    print("Hang tight, writing file might take a couple of minutes ....\n\n")
+    start_time= time.time()
     nrrd.write(os.path.join(directory, prefix+'_modified.nrrd'), mri_out, options=hdr_out)
-
+    print("Elapsed time in saving results %s seconds\n\n" %(time.time() - start_time))
 
 def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
 

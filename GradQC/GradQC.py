@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, time
 import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
@@ -304,9 +304,25 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # if results don't exist or autoMode is specified, run cli-module, this may overwrite previous results
     if not success or not self.autoMode:
+
+        ti= time.time()
         diffusionQCcli = slicer.modules.diffusionqc
-        completion= slicer.cli.runSync(diffusionQCcli, None, parameters)
-        success= not(completion.GetStatus()== completion.CompletedWithErrors)
+        cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
+
+        # --------------------------------------------------------------------
+        # Following is a simple way to monitor progress, displayed in Python Interactor
+        def printStatus(caller, event):
+
+          print("Program is running for %s seconds" %(time.time()-ti))
+
+          if caller.GetOutputText():
+            print('\n\n')
+            print(caller.GetOutputText())
+
+        cliNode.AddObserver('ModifiedEvent', printStatus)
+        # --------------------------------------------------------------------
+
+        success= not(cliNode.GetStatus()== cliNode.CompletedWithErrors)
 
 
     # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
