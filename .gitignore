@@ -3,4 +3,5 @@
 
 *.pyc
 .idea
+.bak
 __pycache__/

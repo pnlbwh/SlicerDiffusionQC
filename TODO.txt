@@ -1,0 +1,20 @@
+# TODO:
+1. (DONE) Sylvain told to use red color for fail row, yellow color for unsure row
+
+2. (DONE) The labels should be made colored and bigger
+
+3. (DONE) If mask does not exist, we have to create that
+
+4. (DONE) The controls buttons have to be properly grouped
+
+5. (DONE) Speed up using named-tuple inside [gradient_process](https://github.com/pnlbwh/SlicerDiffusionQC/blob/tashrif-built/cli-modules/diffusionQC/qclib/gradient_process.py) instead of class being used now. Now, it takes 4s for gradient_process which is same as that of raw version.
+
+6. (DONE) Sylvain told to write data as out.csv instead of .txt as of now 
+
+7. (DONE) Show progress bar during gradient_process (takes 52s) and saveResults (takes 36s). Durations are on Tashrif's workstation.
+
+8. Isaiah noted a changed TBD in [diffusionQC.xml](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/cli-modules/diffusionQC/diffusionQC.xml)
+
+9. Isaiah wants to put some GUI tests [here](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/Testing/Python/CMakeLists.txt)
+
+10. Minor BUG in SlicerUserInteraction.py, Ln 239: every time selectionChanged(), gradientUpdate() is called twice

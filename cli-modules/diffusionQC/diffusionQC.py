@@ -1,8 +1,7 @@
 #!/usr/bin/env python-real
 
 from plumbum import cli
-import os
-import sys
+import os, sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # diffusionQC is added to python search directory
 from qclib.saveResults import saveResults

@@ -30,6 +30,10 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
     shape_out[grad_axis] = len(good_indices)
     hdr_out['sizes'] = shape_out
 
+    # Python's gzip encoding takes ~80 seconds
+    # To speed up, we are using raw encoding (0.5 second) at the expense of file size
+    hdr_out['encoding']= 'raw'
+
     # Write the output dwi
     mri_out = np.delete(mri_in, (np.where(deletion == 0)[0]), axis=grad_axis) # bad ones are marked with 0
 
@@ -47,7 +51,6 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
 
 
     # Now delete the rest of the gradients
-    # print("\n\nDeleting bad gradients ...\n\n")
     for ind in range(mri_out.shape[grad_axis], mri_in.shape[grad_axis]):
         # Python 3.6 (Anaconda)
         # del hdr_out['keyvaluepairs']['DWMRI_gradient_' + f'{ind:04}']
@@ -63,12 +66,11 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
 
 def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
 
-    # In automode, writes out the modified dwi image
+    # In autoMode, writes out the modified dwi image
     if autoMode:
         saveDecisions(prefix, directory, deletion)
         saveDWI(prefix, directory, deletion, hdr, mri, grad_axis)
 
-    # In visualmode, writes out only the temporary results
+    # In visualMode, writes out only the temporary results
     else:
         saveTemporary(prefix, directory, deletion, KLdiv, confidence)
-

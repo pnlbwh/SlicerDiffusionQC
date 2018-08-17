@@ -1,0 +1,10 @@
+[DEFAULT]
+
+unu = /rfanfs/pnl-zorro/software/pnlutil/install-software/BRAINSTools-build/bin/unu
+
+bet = /rfanfs/pnl-zorro/software/local/fsl/bin/bet
+
+ConvertBetweenFileFormats = /rfanfs/pnl-zorro/software/pnlutil/install-software/BRAINSTools-build/bin/ConvertBetweenFileFormats
+
+BrainMaskingThreshold = 0.25
+

@@ -1,4 +1,4 @@
-import os, sys, time
+import os, sys
 import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
@@ -115,8 +115,13 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.applyButton.enabled = False
     processFormLayout.addRow(self.applyButton)
 
-    # Add vertical space
-    # self.layout.addStretch(1) # TODO: space not working
+    #
+    # Progress Bar
+    #
+    self.progressBar = slicer.qSlicerCLIProgressBar( )
+    self.progressBar.setToolTip("Progress of the algorithm")
+    processFormLayout.addWidget(self.progressBar)
+
 
     #
     # Decision Labelling
@@ -133,9 +138,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.summaryLabel.setToolTip("Quality check summary")
     self.summaryLabel.setStyleSheet("font: bold")
     processFormLayout.addWidget(self.summaryLabel)
-
-    # Add vertical space
-    # self.layout.addStretch(1) # TODO: space not working
 
     #
     # Reset Result Button
@@ -293,41 +295,39 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # if result files exist already, don't call cli-module again
     files= os.listdir(os.path.dirname(self.inputSelector.currentPath))
-    resultsExist= 0
     success= 0
+    resultsExist= 0
     for f in files:
       if f.endswith('QC.npy') or f.endswith('confidence.npy') or f.endswith('KLdiv.npy'):
         resultsExist+=1
 
     if resultsExist==3:
+      self.GUI()
       success= 1
 
     # if results don't exist or autoMode is specified, run cli-module, this may overwrite previous results
-    if not success or not self.autoMode:
+    if not success or not self.autoMode: # (not self.autoMode) = True when check box unchecked
 
-        ti= time.time()
         diffusionQCcli = slicer.modules.diffusionqc
         cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
 
-        # --------------------------------------------------------------------
-        # Following is a simple way to monitor progress, displayed in Python Interactor
-        def printStatus(caller, event):
+        # Track progress of the algorithm
+        self.progressBar.setCommandLineModuleNode(cliNode)
 
-          print("Program is running for %s seconds" %(time.time()-ti))
+        def observeStatus(caller,_):
+          # Check if CLI completed w/o any error
+          if caller.GetStatusString()=='Completed' and cliNode.GetErrorText()=='':
+            self.GUI()
 
-          if caller.GetOutputText():
-            print('\n\n')
-            print(caller.GetOutputText())
-
-        cliNode.AddObserver('ModifiedEvent', printStatus)
-        # --------------------------------------------------------------------
-
-        success= not(cliNode.GetStatus()== cliNode.CompletedWithErrors)
+        cliNode.AddObserver('ModifiedEvent', observeStatus)
 
 
-    # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
-    if success and self.autoMode:
-      slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.dwiNode, self.decisionLabel,
+  def GUI(self):
+
+      # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
+      if self.autoMode:  # self.autoMode = True when check box checked
+
+        slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.dwiNode, self.decisionLabel,
                                       self.summaryLabel, self.discardButton, self.keepButton,
                                       self.sureButton, self.unsureButton,
                                       self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)

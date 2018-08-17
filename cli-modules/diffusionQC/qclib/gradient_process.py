@@ -1,5 +1,5 @@
 import numpy as np
-import os
+import os, sys
 
 import warnings
 with warnings.catch_warnings():
@@ -19,15 +19,49 @@ percentage = 0.20  # For discretizing scaled b values
 group = [50, 800]  # For separating lower b values
 T = 400  # Number of non zero values in the mask for the corresponding slice to take into account
 
+def load_mask(mask, dwiPath, fileFormat, prefix, directory):
 
-def load_mask(mask):
+    if mask is None:
 
-    if mask:
+        print('\n\nMask not specified, creating mask ...\n\n')
+        # Load the executables
+        from configparser import ConfigParser
+        config= ConfigParser()
+        config.read(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..','config.ini')))
+
+        params= config['DEFAULT']
+        unu = params['unu']
+        ConvertBetweenFileFormats= params['ConvertBetweenFileFormats']
+        bet = params['bet']
+        eta= float(params['BrainMaskingThreshold'])
+
+        from subprocess import check_output
+        check_output(['sh', 'createMask.sh',
+                    '-i', dwiPath,
+                    '-f', fileFormat,
+                    '-p', prefix,
+                    '-o', directory,
+                    '-e', eta,
+                    '-b', bet,
+                    '-u', unu,
+                    '-c', ConvertBetweenFileFormats])
+
+        # TODO: Validate mask creation from .nii and .nii.gz DWI
+
+        mask= os.path.join(directory, prefix,'_mask','.nii.gz')
+
+    if mask.endswith('.nii') or mask.endswith('.nii.gz'):
         img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
+
+    elif mask.endswith('.nrrd'):
+        img = nrrd.read(mask)
+        return img[0]
+
     else:
-        pass
-        # TODO: look for files ending with mask.extension, otherwise create one
+        print("Invalid file format")
+        exit(1)
+
 
 def extract_feature(volume, *args):
 
@@ -37,7 +71,7 @@ def extract_feature(volume, *args):
         N = len(volume)
         # Estimate bandwidth
         if sig > 0:
-            h = sig * (4 / (3 * N)) ** 0.2
+            h = sig * (4.0 / (3 * N)) ** 0.2
         else:
             h = 1
 
@@ -53,10 +87,9 @@ def extract_feature(volume, *args):
         h = args[1]
 
     volume = np.array(volume).reshape(len(volume), 1)
-    VOLUME = np.repeat(volume, POINTS, axis=1)
-    temp = (x - VOLUME) / h
+    volumeMatrix = np.repeat(volume, POINTS, axis=1)
+    temp = (x - volumeMatrix) / h
     Z = np.sum(np.exp(-0.5 * temp ** 2), axis=0)
-
     Z = Z / sum(Z)
 
     return (Z, x, h)
@@ -90,7 +123,13 @@ def find_b_shell(scaled_b_values):
 
 def grad_process(grad_id):
 
-    print("Processing gradient {}/{} ...".format(grad_id+1,totalGradients))
+    print("Processing gradient {}/{} ...".format(grad_id+1,totalGradients)) # counter may be different from grad_id+1
+    if visualMode:
+        # Each gradient contributes (70/totalGradients) % work
+        print("<filter-progress>{}</filter-progress>".format(0.1+0.7*(grad_id+1)/totalGradients))
+        sys.stdout.flush()
+
+
     # load the specific volume
     if grad_axis == 0:
         I = mri[grad_id, :, :, :]
@@ -152,13 +191,36 @@ def grad_process(grad_id):
 
 def process(dwiPath, maskPath, outDir, autoMode):
 
-    global mri, M, grad_axis, slice_axis, totalGradients
+    # Global definitions, attributes shared among functions and processes
+    global mri, M, grad_axis, slice_axis, totalGradients, visualMode
+    visualMode= not autoMode
 
     hdr, mri, grad_axis, slice_axis, b_value, gradients = dwi_attributes(dwiPath)
-    totalGradients= gradients.shape[0]
-    # global definitions, attributes shared among functions and processes
-    M= load_mask(maskPath)
+    totalGradients = gradients.shape[0]
 
+    print("\n\nInput image loaded ...\n\n")
+    if visualMode:
+        # 5% work done
+        print("<filter-progress>0.05</filter-progress>")
+        sys.stdout.flush()
+
+
+    # Determine prefix and directory
+    if outDir == 'None':
+        directory = os.path.dirname(os.path.abspath(dwiPath))
+    else:
+        directory = outDir
+
+    prefix = os.path.basename(dwiPath.split('.')[0])
+    fileFormat= dwiPath.split('.')[1] # 2nd element is either 'nrrd' or 'nii'
+
+    # Load/create mask
+    M= load_mask(maskPath, dwiPath, fileFormat, prefix, directory)
+    print("\n\nMask loaded ...\n\n")
+    if visualMode:
+        # 10% work done
+        print("<filter-progress>0.10</filter-progress>")
+        sys.stdout.flush()
 
     start_time = time.time()
 
@@ -237,15 +299,12 @@ def process(dwiPath, maskPath, outDir, autoMode):
         if (QC[k, 0] >= 0.05 and QC[k, 0]<= 0.3) and (QC[k, 1] >= 5 and QC[k, 0]<= 20):
             confidence[k]= 0
 
+    print("\n\nPrediction completed ...\n\n")
+    if visualMode:
+        # 90% work done
+        print("<filter-progress>0.90</filter-progress>")
+        sys.stdout.flush()
 
     # Save QC results
-    if outDir == 'None':
-        directory = os.path.dirname(os.path.abspath(dwiPath))
-    else:
-        directory = outDir
-
-    # Extract prefix from dwi
-    prefix = os.path.basename(dwiPath.split('.')[0])
-
     # Pass prefix and directory to saveResults()
     saveResults(prefix, directory, good_bad, S, confidence, hdr, mri, grad_axis, autoMode)
