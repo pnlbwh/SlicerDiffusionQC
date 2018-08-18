@@ -1,11 +1,6 @@
 import numpy as np
 import os, sys
 
-import warnings
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore",category=FutureWarning)
-    import nibabel as nib
-
 
 import time
 import multiprocessing
@@ -19,42 +14,44 @@ percentage = 0.20  # For discretizing scaled b values
 group = [50, 800]  # For separating lower b values
 T = 400  # Number of non zero values in the mask for the corresponding slice to take into account
 
-def load_mask(mask, dwiPath, fileFormat, prefix, directory):
+def load_mask(mask, dwi, prefix, directory):
 
-    if mask is None:
+    if mask=='None':
 
+        # If this is not approved, write a separate CLI for masking, call with ./SlicerApp-real
+
+        import slicer
+        # Mask creation
         print('\n\nMask not specified, creating mask ...\n\n')
-        # Load the executables
-        from configparser import ConfigParser
-        config= ConfigParser()
-        config.read(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..','config.ini')))
+        maskingCLI = slicer.modules.diffusionweightedvolumemasking
+        parameters = {}
 
-        params= config['DEFAULT']
-        unu = params['unu']
-        ConvertBetweenFileFormats= params['ConvertBetweenFileFormats']
-        bet = params['bet']
-        eta= float(params['BrainMaskingThreshold'])
+        mask= os.path.join(directory, prefix+'_mask'+'.nrrd')
+        bse= os.path.join(directory, prefix+'_bse'+'.nrrd')
 
-        from subprocess import check_output
-        check_output(['sh', 'createMask.sh',
-                    '-i', dwiPath,
-                    '-f', fileFormat,
-                    '-p', prefix,
-                    '-o', directory,
-                    '-e', eta,
-                    '-b', bet,
-                    '-u', unu,
-                    '-c', ConvertBetweenFileFormats])
+        # TODO: Make SlicerDMRI accept the following inputs
+        parameters['inputVolume'] = dwi # path/to/dwi.nrrd
+        parameters['outputBaselineFile'] = bse # string/to/bse.nrrd
+        parameters['outputMaskFile'] = mask # string/to/mask.nrrd
 
-        # TODO: Validate mask creation from .nii and .nii.gz DWI
+        cliNode= slicer.cli.runSync(maskingCLI, None, parameters)
+        if not cliNode.GetErrorText() == '':
+            print("\n\nMask creation failed, exiting\n\n")
+            exit(1)
 
-        mask= os.path.join(directory, prefix,'_mask','.nii.gz')
 
     if mask.endswith('.nii') or mask.endswith('.nii.gz'):
+
+        import warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=FutureWarning)
+            import nibabel as nib
+
         img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
 
     elif mask.endswith('.nrrd'):
+        import nrrd
         img = nrrd.read(mask)
         return img[0]
 
@@ -212,10 +209,9 @@ def process(dwiPath, maskPath, outDir, autoMode):
         directory = outDir
 
     prefix = os.path.basename(dwiPath.split('.')[0])
-    fileFormat= dwiPath.split('.')[1] # 2nd element is either 'nrrd' or 'nii'
 
     # Load/create mask
-    M= load_mask(maskPath, dwiPath, fileFormat, prefix, directory)
+    M= load_mask(maskPath, dwiPath, prefix, directory)
     print("\n\nMask loaded ...\n\n")
     if visualMode:
         # 10% work done

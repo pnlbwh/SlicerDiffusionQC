@@ -77,6 +77,16 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     ioFormLayout.addRow("Input Volume Mask: ", self.maskSelector)
 
     #
+    # Create Mask
+    #
+    self.createMaskCheckBox = qt.QCheckBox('Create the mask')
+    self.createMaskCheckBox.toolTip= "Check if you don't have a mask or would like to create one"
+    self.createMaskCheckBox.enabled = True
+    self.createMaskCheckBox.checked = False
+    ioFormLayout.addWidget(self.createMaskCheckBox)
+    self.createMask= False
+
+    #
     # output directory selector
     #
     self.outputDirSelector = ctk.ctkPathLineEdit()
@@ -104,7 +114,8 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.visualMode.enabled = True
     self.visualMode.checked = True
     processFormLayout.addWidget(self.visualMode)
-    self.autoMode= True
+    self.autoMode= True # Default initialization, used to trigger Slicer GUI
+
 
 
     #
@@ -238,12 +249,19 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.maskSelector.connect("currentPathChanged(QString)", self.onSelectMask)
     self.outputDirSelector.connect("currentPathChanged(QString)", self.onSelectOutput)
     self.visualMode.connect('toggled(bool)', self.onVisualMode)
+    self.createMaskCheckBox.connect('toggled(bool)', self.withoutMask)
 
 
 
 
   def cleanup(self):
     pass
+
+  def withoutMask(self, status):
+    self.createMask= status # status= True when checked
+    self.applyButton.enabled = self.inputSelector.currentPath \
+                               and self.outputDirSelector.currentPath and self.createMask
+
 
   def onSelectMask(self):
 
@@ -259,8 +277,11 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
       compositeNode = sliceLogic.GetSliceCompositeNode()
       compositeNode.SetSliceIntersectionVisibility(1)
 
+
     self.applyButton.enabled = self.inputSelector.currentPath \
-        and self.maskSelector.currentPath and self.outputDirSelector.currentPath
+        and self.outputDirSelector.currentPath and self.maskSelector
+
+
 
   def onSelectInput(self):
 
@@ -285,6 +306,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
   def onApplyButton(self):
 
+    # Gradient processing
     parameters = {}
     parameters["input"] = self.inputSelector.currentPath
     parameters["mask"] = self.maskSelector.currentPath
@@ -317,6 +339,18 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
         def observeStatus(caller,_):
           # Check if CLI completed w/o any error
           if caller.GetStatusString()=='Completed' and cliNode.GetErrorText()=='':
+
+            # If mask was not given, created in the pipeline, load now
+            if self.createMask:
+
+              # TODO: check if the mask is loading after creation
+              # Determine prefix and directory
+              directory = os.path.dirname(os.path.abspath(self.inputSelector.currentPath))
+              prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
+
+              self.maskSelector.currentPath= os.path.join(directory, prefix+'_mask'+'.nrrd')
+              self.onSelectMask()
+
             self.GUI()
 
         cliNode.AddObserver('ModifiedEvent', observeStatus)
@@ -328,6 +362,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
       if self.autoMode:  # self.autoMode = True when check box checked
 
         slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.dwiNode, self.decisionLabel,
-                                      self.summaryLabel, self.discardButton, self.keepButton,
-                                      self.sureButton, self.unsureButton,
-                                      self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)
+                                        self.summaryLabel, self.discardButton, self.keepButton,
+                                        self.sureButton, self.unsureButton,
+                                        self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)

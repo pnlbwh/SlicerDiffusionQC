@@ -20,7 +20,7 @@ Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Har
 Clone the repository `git clone https://github.com/pnlbwh/SlicerDiffusionQC.git` in your local directory.
 
 
-[diffusionQC.py](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/cli-modules/diffusionQC/diffusionQC.py) is the cli-module that can be run from the command line. On the other hand, [GradQC.py](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/GradQC.py) is the GUI module that is loaded into Slicer.
+[diffusionQC.py](cli-modules/diffusionQC/diffusionQC.py) is the cli-module that can be run from the command line. On the other hand, [GradQC.py](https://github.com/pnlbwh/SlicerDiffusionQC/blob/speed-up/GradQC/GradQC.py) is the GUI module that is loaded into Slicer.
 
 
 The [xml wrapper](https://github.com/pnlbwh/SlicerDiffusionQC/blob/tashrif-built/speed-up/diffusionQC/diffusionQC.xml) communicates between Slicer and command line call.
