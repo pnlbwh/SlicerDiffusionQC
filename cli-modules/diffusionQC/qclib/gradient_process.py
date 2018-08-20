@@ -1,7 +1,6 @@
 import numpy as np
 import os, sys
 
-
 import time
 import multiprocessing
 from qclib.dwi_attributes import dwi_attributes
@@ -18,25 +17,23 @@ def load_mask(mask, dwi, prefix, directory):
 
     if mask=='None':
 
-        # If this is not approved, write a separate CLI for masking, call with ./SlicerApp-real
-
-        import slicer
         # Mask creation
         print('\n\nMask not specified, creating mask ...\n\n')
-        maskingCLI = slicer.modules.diffusionweightedvolumemasking
-        parameters = {}
+
+        import distutils.spawn
+        from subprocess import check_output
 
         mask= os.path.join(directory, prefix+'_mask'+'.nrrd')
         bse= os.path.join(directory, prefix+'_bse'+'.nrrd')
 
-        # TODO: Make SlicerDMRI accept the following inputs
-        parameters['inputVolume'] = dwi # path/to/dwi.nrrd
-        parameters['outputBaselineFile'] = bse # string/to/bse.nrrd
-        parameters['outputMaskFile'] = mask # string/to/mask.nrrd
+        masking_cli = distutils.spawn.find_executable("DiffusionWeightedVolumeMasking")
 
-        cliNode= slicer.cli.runSync(maskingCLI, None, parameters)
-        if not cliNode.GetErrorText() == '':
-            print("\n\nMask creation failed, exiting\n\n")
+        args = [masking_cli, dwi, bse, mask]
+
+        try:
+            check_output(args)
+        except:
+            print("Mask creation failed")
             exit(1)
 
 
