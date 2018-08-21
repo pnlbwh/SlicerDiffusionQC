@@ -343,7 +343,6 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
             # If mask was not given, created in the pipeline, load now
             if self.createMask:
 
-              # TODO: check if the mask is loading after creation
               # Determine prefix and directory
               directory = os.path.dirname(os.path.abspath(self.inputSelector.currentPath))
               prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
