@@ -17,7 +17,7 @@ class QC(cli.Application):
         ['-i', '--input'],
         cli.ExistingFile,
         help='diffusion weighted mri e.g. dwi.nrrd or path/to/dwi.nrrd, accepted formats: nhdr, nrrd, nii, and nii.gz',
-        mandatory=False)
+        mandatory=True)
 
     mask = cli.SwitchAttr(
         ['-m', '--mask'],
