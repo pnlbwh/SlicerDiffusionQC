@@ -32,7 +32,7 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
 
     # Python's gzip encoding takes ~80 seconds
     # To speed up, we are using raw encoding (0.5 second) at the expense of file size
-    hdr_out['encoding']= 'raw'
+    # hdr_out['encoding']= 'raw'
 
     # Write the output dwi
     mri_out = np.delete(mri_in, (np.where(deletion == 0)[0]), axis=grad_axis) # bad ones are marked with 0
@@ -42,26 +42,26 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
     for new_ind, ind in enumerate(good_indices):
 
         # Python 3.6 (Anaconda)
-        # hdr_out['keyvaluepairs']['DWMRI_gradient_' + f'{new_ind:04}'] = hdr_in['keyvaluepairs'][
+        # hdr_out['DWMRI_gradient_' + f'{new_ind:04}'] = hdr_in[
         #     'DWMRI_gradient_' + f'{ind:04}']
 
         # Python 2.7 (Slicer)
-        hdr_out['keyvaluepairs']['DWMRI_gradient_' + '{:04}'.format(new_ind)] = hdr_in['keyvaluepairs'][
+        hdr_out['DWMRI_gradient_' + '{:04}'.format(new_ind)] = hdr_in[
             'DWMRI_gradient_' + '{:04}'.format(ind)]
 
 
     # Now delete the rest of the gradients
     for ind in range(mri_out.shape[grad_axis], mri_in.shape[grad_axis]):
         # Python 3.6 (Anaconda)
-        # del hdr_out['keyvaluepairs']['DWMRI_gradient_' + f'{ind:04}']
+        # del hdr_out['DWMRI_gradient_' + f'{ind:04}']
 
         # Python 2.7 (Slicer)
-        del hdr_out['keyvaluepairs']['DWMRI_gradient_' + '{:04}'.format(ind)]
+        del hdr_out['DWMRI_gradient_' + '{:04}'.format(ind)]
 
     print("Saving modified diffusion weighted MRI ...\n\n")
     print("Hang tight, writing file might take a couple of minutes ....\n\n")
     start_time= time.time()
-    nrrd.write(os.path.join(directory, prefix+'_modified.nrrd'), mri_out, options=hdr_out)
+    nrrd.write(os.path.join(directory, prefix+'_modified.nrrd'), mri_out, header=hdr_out, compression_level = 1)
     print("Elapsed time in saving results %s seconds\n\n" %(time.time() - start_time))
 
 def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
