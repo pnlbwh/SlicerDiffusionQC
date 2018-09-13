@@ -30,9 +30,6 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
     shape_out[grad_axis] = len(good_indices)
     hdr_out['sizes'] = shape_out
 
-    # Python's gzip encoding takes ~80 seconds
-    # To speed up, we are using raw encoding (0.5 second) at the expense of file size
-    # hdr_out['encoding']= 'raw'
 
     # Write the output dwi
     mri_out = np.delete(mri_in, (np.where(deletion == 0)[0]), axis=grad_axis) # bad ones are marked with 0
