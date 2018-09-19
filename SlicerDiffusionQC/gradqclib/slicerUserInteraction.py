@@ -4,10 +4,11 @@ import os
 import sys
 
 # adding diffusionQC to python search directory
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             '..', '..', 'cli-modules', 'diffusionQC')))
-from qclib.dwi_attributes import dwi_attributes
-from qclib.saveResults import saveResults
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+#                                             '..', '..', 'cli-modules', 'diffusionQC')))
+
+from diffusionQC.qclib.dwi_attributes import dwi_attributes
+from diffusionQT.qclib.saveResults import saveResults
 
 import numpy as np
 

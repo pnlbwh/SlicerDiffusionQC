@@ -3,6 +3,8 @@ set(MODULE_NAME GradQC)
 
 #-----------------------------------------------------------------------------
 set(MODULE_PYTHON_SCRIPTS
+  gradqclib/__init__.py
+  gradqclib/slicerUserInteraction.py
   ${MODULE_NAME}.py
   )
 
