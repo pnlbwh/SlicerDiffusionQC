@@ -23,6 +23,8 @@ add_subdirectory(SlicerDiffusionQC)
 add_subdirectory(diffusionQC)
 ## NEXT_MODULE
 
+add_subdirectory(diffusionqclib)
+
 #-----------------------------------------------------------------------------
 include(${Slicer_EXTENSION_GENERATE_CONFIG})
 include(${Slicer_EXTENSION_CPACK})
