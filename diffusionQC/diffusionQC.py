@@ -3,8 +3,7 @@
 from plumbum import cli
 import os, sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # diffusionQC is added to python search directory
-from qclib.gradient_process import process
+from diffusionqclib.gradient_process import process
 
 
 class QC(cli.Application):
