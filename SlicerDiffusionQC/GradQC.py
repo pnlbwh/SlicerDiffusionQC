@@ -2,8 +2,7 @@ import os, sys
 import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from gradqclib.slicerUserInteraction import slicerGUI
+from .gradqclib.slicerUserInteraction import slicerGUI
 
 #
 # GradQC
@@ -21,19 +20,19 @@ class GradQC(ScriptedLoadableModule):
     self.parent.dependencies = [ ]
     self.parent.contributors = ["Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)"]
     self.parent.helpText = """
-      This is a complete slicer module for quality checking of diffusion weighted MRI. It 
-      identifies bad gradients by comparing distance of each gradient to a median line obtained from 
-      KL divergences between consecutive slices. After the above processing, it allows user to manually 
+      This is a complete slicer module for quality checking of diffusion weighted MRI. It
+      identifies bad gradients by comparing distance of each gradient to a median line obtained from
+      KL divergences between consecutive slices. After the above processing, it allows user to manually
       review each gradient, keep, or discard them.
-      
+
       """
     self.parent.helpText += self.getDefaultModuleDocumentationLink()
     self.parent.acknowledgementText = """
-      A similar software based on MATLAB environment was earlier developed by a group 
-      under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School. 
+      A similar software based on MATLAB environment was earlier developed by a group
+      under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School.
       The MATLAB SignalDropQCTool is available at https://github.com/pnlbwh/SignalDropQCTool
       The SlicerDiffusionQC is a faster, cleaner, and more user oriented version of that software.
-      
+
       """
 
 #
@@ -109,7 +108,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     # Visual Mode
     #
     self.visualMode = qt.QCheckBox('Slicer Visual Mode')
-    self.visualMode.toolTip= '''Uncheck for auto processing w/o 
+    self.visualMode.toolTip= '''Uncheck for auto processing w/o
                       Slicer visualization and user interaction'''
     self.visualMode.enabled = True
     self.visualMode.checked = True

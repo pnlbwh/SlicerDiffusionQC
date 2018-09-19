@@ -8,12 +8,12 @@
   <license/>
   <contributor>Tashrif Billah, Isaiah Norton</contributor>
   <acknowledgements><![CDATA[TBD]]></acknowledgements>
-  
+
   <parameters>
-  
+
     <label>Input and Output</label>
     <description><![CDATA[Input/output parameters]]></description>
-    
+
 	<file>
       <name>input</name>
       <longflag>input</longflag>
@@ -21,7 +21,7 @@
       <channel>input</channel>
       <description><![CDATA[Input Diffusion Weighted Image (NRRD) path]]></description>
     </file>
-	
+
 	<file>
       <name>mask</name>
       <longflag>mask</longflag>
@@ -29,7 +29,7 @@
       <channel>input</channel>
       <description><![CDATA[Mask of Input Diffusion Weighted Image path]]></description>
     </file>
-	    
+
 	<directory>
       <name>out</name>
       <longflag>out</longflag>
@@ -46,7 +46,7 @@
       <description><![CDATA[Automatic/visual processing]]></description>
       <default>True</default>
     </boolean>
-	
+
   </parameters>
-	  
+
 </executable>

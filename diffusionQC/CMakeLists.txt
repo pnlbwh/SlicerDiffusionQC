@@ -1,46 +1,28 @@
-
 #-----------------------------------------------------------------------------
 set(MODULE_NAME diffusionQCCLI)
 
-#-----------------------------------------------------------------------------
+set(CLICODE diffusionQC)
 
-#
-# SlicerExecutionModel
-#
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
 
-#
-# ITK
-#
-set(${PROJECT_NAME}_ITK_COMPONENTS
-  ITKIOImageBase
-  ITKSmoothing
+set(CLI_DEST "${CMAKE_BINARY_DIR}/${Slicer_CLIMODULES_BIN_DIR}/")
+set(CLI_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/")
+
+add_custom_command(
+  OUTPUT "${CLI_DEST}/${CLICODE}.py" "${CLI_DEST}/${CLICODE}.xml"
+  COMMAND "${CMAKE_COMMAND}" -E make_directory "${CLI_DEST}"
+  COMMAND "${CMAKE_COMMAND}" -E copy "${CLI_SOURCE}/${CLICODE}.py" "${CLI_DEST}"
+  COMMAND "${CMAKE_COMMAND}" -E copy "${CLI_SOURCE}/${CLICODE}.xml" "${CLI_DEST}"
+  DEPENDS "${CLI_SOURCE}/${CLICODE}.xml" "${CLI_SOURCE}/${CLICODE}.py"
+  COMMENT ""
+)
+add_custom_target(${CLICODE} ALL
+  SOURCES "${CLI_SOURCE}/${CLICODE}.py" "${CLI_SOURCE}/${CLICODE}.py"
+  DEPENDS "${CLI_DEST}/${CLICODE}.py" "${CLI_DEST}/${CLICODE}.py")
+
+install(FILES ${CLICODE}.py ${CLICODE}.xml
+  DESTINATION "${Slicer_INSTALL_CLIMODULES_BIN_DIR}")
+
+set(TESTDATA "${SlicerDMRI_SOURCE_DIR}/Testdata/")
+add_test(NAME ${CLICODE}_Test
+  COMMAND "${PYTHON_EXECUTABLE}" "${CLI_DEST}/${CLICODE}.py" --test "${TESTDATA}"
   )
-find_package(ITK 4.6 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
-set(ITK_NO_IO_FACTORY_REGISTER_MANAGER 1) # See Libs/ITKFactoryRegistration/CMakeLists.txt
-include(${ITK_USE_FILE})
-
-#-----------------------------------------------------------------------------
-set(MODULE_INCLUDE_DIRECTORIES
-  )
-
-set(MODULE_SRCS
-  )
-
-set(MODULE_TARGET_LIBRARIES
-  ${ITK_LIBRARIES}
-  )
-
-#-----------------------------------------------------------------------------
-SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
-  TARGET_LIBRARIES ${MODULE_TARGET_LIBRARIES}
-  INCLUDE_DIRECTORIES ${MODULE_INCLUDE_DIRECTORIES}
-  ADDITIONAL_SRCS ${MODULE_SRCS}
-  )
-
-#-----------------------------------------------------------------------------
-if(BUILD_TESTING)
-  add_subdirectory(Testing)
-endif()

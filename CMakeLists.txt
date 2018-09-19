@@ -19,8 +19,8 @@ include(${Slicer_USE_FILE})
 
 #-----------------------------------------------------------------------------
 # Extension modules
-add_subdirectory(GradQC)
-add_subdirectory(cli-modules)
+add_subdirectory(SlicerDiffusionQC)
+add_subdirectory(diffusionQC)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
