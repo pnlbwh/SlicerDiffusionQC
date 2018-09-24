@@ -12,6 +12,13 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 set(python_packages_DIR "${CMAKE_BINARY_DIR}/python-packages-install")
 file(TO_NATIVE_PATH ${python_packages_DIR} python_packages_DIR_NATIVE_DIR)
 
+set(_install_pynrrd COMMAND ${CMAKE_COMMAND}
+    -E env
+    PYTHONNOUSERSITE=1
+    ${PYTHON_EXECUTABLE} -m pip install git+https://github.com/mhe/pynrrd.git@eeb4df8dc96eff2d6aaa0e419e04c469daf78cdc
+                         --prefix ${python_packages_DIR_NATIVE_DIR} --upgrade
+    )
+
 set(_install_diffusionqclib COMMAND ${CMAKE_COMMAND}
     -E env
     PYTHONNOUSERSITE=1
@@ -25,6 +32,7 @@ ExternalProject_Add(${proj}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E  echo_append ""
+    ${_install_pynrrd}
     ${_install_diffusionqclib}
     DEPENDS
         ${${proj}_DEPENDENCIES}
