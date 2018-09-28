@@ -12,7 +12,7 @@ def dwi_attributes(file_name):
 
     axis_elements= hdr['kinds']
     for i in range(4):
-        if axis_elements[i] == 'list':
+        if axis_elements[i] == 'list' or axis_elements[i] == 'vector':
             grad_axis= i
             break
 
