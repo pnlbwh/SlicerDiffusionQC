@@ -31,6 +31,7 @@ def load_mask(mask, dwi, prefix, directory):
         args = [masking_cli, dwi, bse, mask]
 
         try:
+            print('Slicer --launch', masking_cli, dwi, bse, mask)
             check_output(args)
         except:
             print("Mask creation failed")

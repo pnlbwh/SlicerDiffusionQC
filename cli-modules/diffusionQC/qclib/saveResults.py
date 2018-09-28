@@ -62,12 +62,12 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
     print("Elapsed time in saving results %s seconds\n\n" %(time.time() - start_time))
 
 def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
-
+    
+    saveTemporary(prefix, directory, deletion, KLdiv, confidence)
+    
     # In autoMode, writes out the modified dwi image
     if autoMode:
         saveDecisions(prefix, directory, deletion)
         saveDWI(prefix, directory, deletion, hdr, mri, grad_axis)
 
-    # In visualMode, writes out only the temporary results
-    else:
-        saveTemporary(prefix, directory, deletion, KLdiv, confidence)
+        
