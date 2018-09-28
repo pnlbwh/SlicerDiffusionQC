@@ -86,7 +86,7 @@ Saves `inputPrefix_modified.nrrd` and `inputPrefix_QC.txt`
 
 ```
 from pip._internal import main as pipmain
-pipmain(['install', 'pynrrd', 'nibabel', 'plumbum'])
+pipmain(['install', 'pynrrd', 'nibabel', 'plumbum', 'pandas'])
 
 ```
 
@@ -130,7 +130,7 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 # Testing installation
 
-`Slicer --launch SlicerDiffusionQC/run_test.py`
+`Slicer --launch python-real SlicerDiffusionQC/run_test.py`
 
 `SlicerDiffusionQC/test_data/ref` contains reference results. 
 After successful installation and upon execution of the above command, some files will be created in `SlicerDiffusionQC/test_data/test`. 
