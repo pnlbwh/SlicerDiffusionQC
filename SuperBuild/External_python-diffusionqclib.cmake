@@ -53,3 +53,10 @@ mark_as_superbuild(
     LABELS "PYTHONPATH_LAUNCHER_BUILD"
     )
 mark_as_superbuild(python_packages_DIR:PATH)
+
+
+#-----------------------------------------------------------------------------
+# Clean the EP stamp so 'make clean' is more useful for testing
+ExternalProject_Get_Property(${proj} STAMP_DIR)
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${STAMP_DIR}")
+
