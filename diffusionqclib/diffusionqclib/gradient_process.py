@@ -3,9 +3,8 @@ import os, sys
 
 import time
 import multiprocessing
-from qclib.dwi_attributes import dwi_attributes
-from qclib.saveResults import saveResults
-
+from dwi_attributes import dwi_attributes
+from saveResults import svaeResults
 
 POINTS = 50 # For KDE estimation
 eps = 2.2204e-16  # For preventing log( ) to be -inf

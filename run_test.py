@@ -13,8 +13,7 @@ TESTDIR= os.path.join(SCRIPTDIR, 'test_data', 'test')
 
 
 # diffusionQC is added to python search directory
-sys.path.append(os.path.join(SCRIPTDIR, 'cli-modules/diffusionQC'))
-from qclib.gradient_process import process
+from diffusionqclib.gradient_process import process
 
 
 def load_results(directory, prefix):

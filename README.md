@@ -1,13 +1,13 @@
 # SlicerDiffusionQC
 
 
-This is a complete slicer module for quality checking of diffusion weighted MRI. It 
-identifies bad gradients by comparing distance of each gradient to a median line obtained from 
-KL divergences between consecutive slices. After the above processing, it allows user to manually 
+This is a complete slicer module for quality checking of diffusion weighted MRI. It
+identifies bad gradients by comparing distance of each gradient to a median line obtained from
+KL divergences between consecutive slices. After the above processing, it allows user to manually
 review each gradient, keep, or discard them.
 
-A similar software based on MATLAB environment was earlier developed by a group 
-under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School. 
+A similar software based on MATLAB environment was earlier developed by a group
+under the supervision of Yogesh Rathi, Asst. Professor, Harvard Medical School.
 The MATLAB SignalDropQCTool is available at [](https://github.com/pnlbwh/SignalDropQCTool)
 The SlicerDiffusionQC is a faster, cleaner, and more user oriented version of that software.
 
@@ -33,7 +33,7 @@ Checks the quality of gradients in a diffusion weighted mri.
 Predicts each gradient as pass or fail.
 
 Usage:
-    diffusionQC_real.py [SWITCHES] 
+    diffusionQC_real.py [SWITCHES]
 
 Meta-switches:
     -h, --help                          Prints this help message and quits
@@ -69,7 +69,7 @@ When you don't have a mask, and you are okay with saving results in the input di
 `path/to/slicer.exe --launch path/to/slicer/python-real ./cli-modules/diffusionQC.py -i path/to/input.nrrd -a`
 
 
-When you have a mask, and you are okay with saving results in the input directory: 
+When you have a mask, and you are okay with saving results in the input directory:
 
 `path/to/slicer.exe --launch path/to/slicer/python-real ./cli-modules/diffusionQC.py -i path/to/input.nrrd -m path/to/mask.nrrd -a`
 
@@ -97,7 +97,7 @@ pipmain(['install', 'pynrrd', 'nibabel', 'plumbum', 'pandas'])
 /home/pnl/Downloads/SlicerDiffusionQC/GradQC
 ```
 
-If no error shows up the Python console, all dependencies are solved and your loading is successful. 
+If no error shows up the Python console, all dependencies are solved and your loading is successful.
 
 3. Type `GradQC` in `Slicer>Modules` search icon, and select it from the drop down menu.
 
@@ -113,7 +113,7 @@ python ./diffusionQC_real.py -i path/to/input.nrrd -m path/to/mask.nrrd -o outpu
 
 ```
 
-Saves `inputPrefix_decisions.npy, inputPrefix_confidence.npy, and inputPrefix_KLdiv.npy`. The temporary files are loaded in 
+Saves `inputPrefix_decisions.npy, inputPrefix_confidence.npy, and inputPrefix_KLdiv.npy`. The temporary files are loaded in
 [Slicer GUI](GradQC). After user interaction, when "Save"
 is pressed, the results are saved as `inputPrefix_modified.nrrd and inputPrefix_QC.txt`.
 
@@ -132,7 +132,7 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 
 `Slicer --launch python-real SlicerDiffusionQC/run_test.py`
 
-`SlicerDiffusionQC/test_data/ref` contains reference results. 
-After successful installation and upon execution of the above command, some files will be created in `SlicerDiffusionQC/test_data/test`. 
+`SlicerDiffusionQC/test_data/ref` contains reference results.
+After successful installation and upon execution of the above command, some files will be created in `SlicerDiffusionQC/test_data/test`.
 Follow the STDOUT to see success.
 
