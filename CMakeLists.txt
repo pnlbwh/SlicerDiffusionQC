@@ -30,6 +30,8 @@ endif()
 # Extension modules
 add_subdirectory(SlicerDiffusionQC)
 add_subdirectory(diffusionQC)
+add_subdirectory(Test)
+
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
