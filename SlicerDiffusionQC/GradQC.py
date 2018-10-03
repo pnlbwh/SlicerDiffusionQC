@@ -241,6 +241,8 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     self.saveResultsButton.enabled = True
     finishFormLayout.addRow(self.saveResultsButton)
 
+    # Add vertical spacer
+    self.layout.addStretch(1)
 
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
