@@ -12,6 +12,13 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 set(python_packages_DIR "${CMAKE_BINARY_DIR}/python-packages-install")
 file(TO_NATIVE_PATH ${python_packages_DIR} python_packages_DIR_NATIVE_DIR)
 
+set(_install_deps COMMAND ${CMAKE_COMMAND}
+    -E env
+    PYTHONNOUSERSITE=1
+    ${PYTHON_EXECUTABLE} -m pip install plumbum nibabel
+                                --prefix "${python_packages_DIR_NATIVE_DIR}" --upgrade
+    )
+
 set(_install_pynrrd COMMAND ${CMAKE_COMMAND}
     -E env
     PYTHONNOUSERSITE=1
@@ -32,6 +39,7 @@ ExternalProject_Add(${proj}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E  echo_append ""
+    ${_install_deps}
     ${_install_pynrrd}
     ${_install_diffusionqclib}
     DEPENDS

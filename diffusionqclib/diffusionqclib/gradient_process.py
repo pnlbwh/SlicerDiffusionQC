@@ -3,6 +3,14 @@ import os, sys
 
 import time
 import multiprocessing
+
+import nrrd
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    import nibabel as nib
+
+
 from dwi_attributes import dwi_attributes
 from saveResults import svaeResults
 
@@ -38,17 +46,10 @@ def load_mask(mask, dwi, prefix, directory):
 
 
     if mask.endswith('.nii') or mask.endswith('.nii.gz'):
-
-        import warnings
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=FutureWarning)
-            import nibabel as nib
-
         img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
 
     elif mask.endswith('.nrrd'):
-        import nrrd
         img = nrrd.read(mask)
         return img[0]
 
