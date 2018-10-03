@@ -2,7 +2,6 @@ import os, sys
 import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from gradqclib.slicerUserInteraction import slicerGUI
 
 #
