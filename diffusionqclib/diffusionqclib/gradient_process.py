@@ -21,7 +21,7 @@ T = 400  # Number of non zero values in the mask for the corresponding slice to 
 
 def load_mask(mask, dwi, prefix, directory):
 
-    if mask=='None':
+    if mask is None:
 
         # Mask creation
         print('\n\nMask not specified, creating mask ...\n\n')
@@ -183,7 +183,7 @@ def grad_process(grad_id):
 
 
 
-def process(dwiPath, maskPath, outDir, autoMode):
+def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
     # Global definitions, attributes shared among functions and processes
     global mri, M, grad_axis, slice_axis, totalGradients, visualMode
@@ -200,7 +200,7 @@ def process(dwiPath, maskPath, outDir, autoMode):
 
 
     # Determine prefix and directory
-    if outDir == 'None':
+    if outDir is None:
         directory = os.path.dirname(os.path.abspath(dwiPath))
     else:
         directory = outDir

@@ -2,15 +2,13 @@
 
 import numpy as np
 # import pandas as pd
-import os, sys
+import os, sys, tempfile
 import nrrd
 
 eps = 2.2204e-16
 
 SCRIPTDIR= os.path.abspath(os.path.dirname(__file__))
-REFDIR= os.path.join(SCRIPTDIR, 'test_data', 'ref')
-TESTDIR= os.path.join(SCRIPTDIR, 'test_data', 'test')
-
+REFDIR= os.path.join(SCRIPTDIR, 'Baseline')
 
 # diffusionQC is added to python search directory
 from diffusionqclib.gradient_process import process
@@ -30,19 +28,20 @@ def load_results(directory, prefix):
 
 def main():
 
-    cases= ['5006-dwi-xc_test', '1001-dwi-xc_test']
+    cases= ['SiemensTrio-Syngo2004A-1']
 
     for case in cases:
+        tmpdir = tempfile.mkdtemp()
+        print(tmpdir)
 
         # run test case
-        # process(self.dwi, self.mask, self.out, self.autoMode)
-        process(os.path.join(TESTDIR, case+'.nrrd'), 'None', 'None', True)
+        process(os.path.join(REFDIR, case+'.nrrd'), outDir=tmpdir) 
 
 
         # load reference results
         csv, qc, kl, con, dwi = load_results(REFDIR, case)
         # load obtained results
-        csv_test, qc_test, kl_test, con_test, dwi_test = load_results(TESTDIR, case)
+        csv_test, qc_test, kl_test, con_test, dwi_test = load_results(tmpdir, case)
 
         failed= 0
         # for attr in 'csv qc kl con dwi'.split(' '):
