@@ -82,30 +82,13 @@ Saves `inputPrefix_modified.nrrd` and `inputPrefix_QC.txt`
 
 # For Slicer GUI manual processing:
 
-1. Open the Slicer Python Interactor and install the dependencies:
-
-```
-from pip._internal import main as pipmain
-pipmain(['install', 'pynrrd', 'nibabel', 'plumbum', 'pandas'])
-
-```
-
-2. (This step will be done automatically) Add the following path to `Slicer>Edit>Application Settings>Modules>Additional module paths`:
-
-```
-/home/pnl/Downloads/SlicerDiffusionQC/cli-modules/diffusionQC
-/home/pnl/Downloads/SlicerDiffusionQC/GradQC
-```
-
-If no error shows up the Python console, all dependencies are solved and your loading is successful.
-
-3. Type `GradQC` in `Slicer>Modules` search icon, and select it from the drop down menu.
+1. Type `GradQC` in `Slicer>Modules` search icon, and select it from the drop down menu.
 
 
-4. Specify the input image, input mask, and output directory. Hit `Process`. Based on the power of your machine, it might take a few minutes to see the results on Slicer. The rest should be interactive.
+2. Specify the input image, input mask, and output directory. Hit `Process`. Based on the power of your machine, it might take a few minutes to see the results on Slicer. The rest should be interactive.
 
 
-The XML wrapper makes following command line calls and creates temporary files as explained below:
+The CLI wrapper makes following command line calls and creates temporary files as explained below:
 
 ```
 python ./diffusionQC_real.py -i path/to/input.nrrd -m path/to/mask.nrrd
