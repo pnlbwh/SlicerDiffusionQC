@@ -18,15 +18,17 @@ def load_results(directory, prefix):
 
     # csv= pd.read_csv(os.path.join(directory, prefix+'_QC.csv'))
     csv = np.load(os.path.join(directory, prefix + '_QC.npy'))
-    qc= np.load(os.path.join(directory, prefix + '_QC.npy'))
-    kl= np.load(os.path.join(directory, prefix + '_KLdiv.npy'))
-    con= np.load(os.path.join(directory, prefix + '_confidence.npy'))
-    dwi= nrrd.read(os.path.join(directory, prefix+'_modified.nrrd'))[0]
+    qc  = np.load(os.path.join(directory, prefix + '_QC.npy'))
+    kl  = np.load(os.path.join(directory, prefix + '_KLdiv.npy'))
+    con = np.load(os.path.join(directory, prefix + '_confidence.npy'))
+    dwi = nrrd.read(os.path.join(directory, prefix+'_modified.nrrd'))[0]
 
     return (csv, qc, kl, con, dwi)
 
 
 def main():
+    import subprocess
+    subprocess.check_call(['git', 'lfs', 'pull', '--exclude='], cwd=REFDIR, )
 
     cases= ['SiemensTrio-Syngo2004A-1']
 
