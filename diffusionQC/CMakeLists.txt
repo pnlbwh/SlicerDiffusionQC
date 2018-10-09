@@ -22,11 +22,11 @@ add_custom_target(${CLICODE} ALL
 install(FILES ${CLICODE}.py ${CLICODE}.xml
   DESTINATION "${Slicer_INSTALL_CLIMODULES_BIN_DIR}")
 
-set(TESTDATA "${SlicerDiffusionQC_SOURCE_DIR}/Testdata/")
-add_test(NAME ${CLICODE}_Test
-  COMMAND
-  "${Slicer_LAUNCHER_EXECUTABLE}"
-  --launcher-additional-settings "${CMAKE_BINARY_DIR}/AdditionalLauncherSettings.ini"
-  --launch
-  "${PYTHON_EXECUTABLE}" "${CLI_DEST}/${CLICODE}.py" --test "${TESTDATA}"
-  )
+#set(TESTDATA "${SlicerDiffusionQC_SOURCE_DIR}/Testdata/")
+#add_test(NAME ${CLICODE}_Test
+#  COMMAND
+#  "${Slicer_LAUNCHER_EXECUTABLE}"
+#  --launcher-additional-settings "${CMAKE_BINARY_DIR}/AdditionalLauncherSettings.ini"
+#  --launch
+#  "${PYTHON_EXECUTABLE}" "${CLI_DEST}/${CLICODE}.py" --test "${TESTDATA}"
+#  )

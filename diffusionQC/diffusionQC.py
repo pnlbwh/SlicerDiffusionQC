@@ -31,14 +31,23 @@ class QC(cli.Application):
         help='''output directory (default: input dwi directory)''',
         mandatory=False)
 
-
     autoMode= cli.Flag(
         ['-a', '--auto'],
         help= 'Turn on this flag for command line/automatic processing w/o Slicer visualization',
         mandatory= False,
         default= False)
 
+#    run_test = cli.SwitchAttr(
+#        ['--test']
+#        help='''Run self-tests against given directory (unimplemented)''',
+#        mandatory=False)
+
+
     def main(self):
+        if self.run_test:
+            import warnings
+            warnings.warn("--test is unimplemented for the CLI mode")
+            sys.exit(0)
 
         self.dwi= str(self.dwi)
         self.mask= str(self.mask)
