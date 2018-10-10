@@ -13,17 +13,7 @@ The SlicerDiffusionQC is a faster, cleaner, and more user oriented version of th
 
 Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)
 
-
-
-# File description
-
-Clone the repository `git clone https://github.com/pnlbwh/SlicerDiffusionQC.git` in your local directory.
-
-
-[diffusionQC.py](cli-modules/diffusionQC/diffusionQC.py) is the cli-module that can be run from the command line. On the other hand, [GradQC.py](GradQC/GradQC.py) is the GUI module that is loaded into Slicer.
-
-
-The [xml wrapper](diffusionQC/diffusionQC.xml) communicates between Slicer and command line call.
+![Screenshot of DiffusionQC gradient-check module](https://github.com/pnlbwh/SlicerDiffusionQC/raw/master/Misc/DiffusionQC-screenshot.jpg)
 
 # Usage
 
@@ -119,3 +109,12 @@ Since autoMode is triggered, Slicer GUI is not pulled up.
 After successful installation and upon execution of the above command, some files will be created in `SlicerDiffusionQC/test_data/test`.
 Follow the STDOUT to see success.
 
+# File description
+
+Clone the repository `git clone https://github.com/pnlbwh/SlicerDiffusionQC.git` in your local directory.
+
+
+[diffusionQC.py](diffusionQC/diffusionQC.py) is the cli-module that can be run from the command line. On the other hand, [GradQC.py](GradQC/GradQC.py) is the GUI module that is loaded into Slicer.
+
+
+The [SlicerExecutionModel wrapper](diffusionQC/diffusionQC.xml) describes the input/output of this script for use by Slicer. The Slicer scripted GUI module code is within the SlicerDiffusionQC subdirectory.
