@@ -48,7 +48,7 @@ def load_mask(mask, dwi, prefix, directory):
         img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
 
-    elif mask.endswith('.nrrd'):
+    elif mask.endswith('.nrrd') or mask.endswith('.nhdr'):
         img = nrrd.read(mask)
         return img[0]
 

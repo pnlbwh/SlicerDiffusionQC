@@ -24,6 +24,7 @@ class QC(cli.Application):
             accepted formats: nhdr, nrrd, nii, and nii.gz, 
             if not provided then looks for default: dwi_mask.format in input directory,
             if default is not available, then creates the mask''',
+        default=None,
         mandatory=False)
 
     out = cli.SwitchAttr(
@@ -34,8 +35,8 @@ class QC(cli.Application):
     autoMode= cli.Flag(
         ['-a', '--auto'],
         help= 'Turn on this flag for command line/automatic processing w/o Slicer visualization',
-        mandatory= False,
-        default= False)
+        mandatory=False,
+        default=False)
 
 #    run_test = cli.SwitchAttr(
 #        ['--test']
@@ -49,9 +50,9 @@ class QC(cli.Application):
         #    warnings.warn("--test is unimplemented for the CLI mode")
         #    sys.exit(0)
 
-        self.dwi= str(self.dwi)
-        self.mask= str(self.mask)
-        self.out= str(self.out)
+        self.dwi = self.dwi
+        self.mask = self.mask
+        self.out = self.out
 
         process(self.dwi, self.mask, self.out, self.autoMode)
 
