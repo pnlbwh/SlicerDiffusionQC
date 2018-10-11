@@ -44,10 +44,10 @@ class QC(cli.Application):
 
 
     def main(self):
-        if self.run_test:
-            import warnings
-            warnings.warn("--test is unimplemented for the CLI mode")
-            sys.exit(0)
+        #if self.run_test:
+        #    import warnings
+        #    warnings.warn("--test is unimplemented for the CLI mode")
+        #    sys.exit(0)
 
         self.dwi= str(self.dwi)
         self.mask= str(self.mask)
