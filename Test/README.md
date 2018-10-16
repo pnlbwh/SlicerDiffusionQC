@@ -1,5 +1,9 @@
 The test data in this directory is managed using [git-lfs](https://git-lfs.github.com/).
 
+Download all data with
+
+    > git lfs pull --exclude=
+
 New data should be added with the following sequence:
 
     > git lfs track Test/Baseline/NEWDATA.ext
