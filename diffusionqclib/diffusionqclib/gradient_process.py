@@ -205,10 +205,10 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     else:
         directory = outDir
 
-    prefix = os.path.basename(dwiPath.split('.'))[0]
+    prefix = os.path.basename(os.path.splitext(dwiPath)[0])
 
     # Load/create mask
-    M= load_mask(maskPath, dwiPath, prefix, directory)
+    M = load_mask(maskPath, dwiPath, prefix, directory)
     print("\n\nMask loaded ...\n\n")
     if visualMode:
         # 10% work done

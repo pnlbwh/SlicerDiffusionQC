@@ -311,7 +311,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     parameters = {}
     parameters["input"] = self.inputSelector.currentPath
     parameters["mask"] = self.maskSelector.currentPath
-    parameters["output"] = self.outputDirSelector.currentPath
+    parameters["out"] = self.outputDirSelector.currentPath
 
     # if self.autoMode= False (check box unchecked), then automatic processing triggers, otherwise visual
     parameters["auto"] = not self.autoMode
@@ -332,7 +332,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     if not success or not self.autoMode: # (not self.autoMode) = True when check box unchecked
 
         diffusionQCcli = slicer.modules.diffusionqc
-        cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
+        cliNode = slicer.cli.run(diffusionQCcli, parameters=parameters)
 
         # Track progress of the algorithm
         self.progressBar.setCommandLineModuleNode(cliNode)
