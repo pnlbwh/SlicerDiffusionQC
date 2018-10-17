@@ -287,18 +287,19 @@ class slicerGUI():
   def nextReview(self):
 
     arr = self.dwiNode.GetDiffusionWeightedVolumeDisplayNode()
-    # Mark the corresponding gradient as fail
+
     diffusion_index = arr.GetDiffusionComponent()
 
     if (self.confidence==0).any( ):
-      i= diffusion_index+1
-      while self.confidence[i]: # While sure, continue looping for the next unsure
-        i+=1
+       if diffusion_index<len(self.confidence)-1:
+           i=diffusion_index+1
+       else:
+           i=0 # force to start from beginning
 
-        if i== len(self.confidence):
-          i= 0 # force to start from beginning
+       while self.confidence[i]: # While sure, continue looping for the next unsure
+           i+=1
 
-      if i!=diffusion_index:
+       if i!=diffusion_index:
         arr.SetDiffusionComponent(i)
         self.plotUpdate(i)
 
