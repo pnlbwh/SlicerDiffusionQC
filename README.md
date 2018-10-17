@@ -90,6 +90,16 @@ path/to/slicer.exe --launch path/to/slicer/python-real Test/run_test.py
 If installation is successful, the above command will create some files in a temporary directory.
 Follow STDOUT to see success.
 
+*You need to have `git lfs` set up on your machine:
+
+[Download](https://git-lfs.github.com/) Git command line extension
+
+```
+tar -xzvf git-lfs-linux-*
+install.sh
+git lfs install
+
+```
 
 
 # For automatic processing:
