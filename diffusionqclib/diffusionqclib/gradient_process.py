@@ -34,6 +34,11 @@ def load_mask(mask, dwi, prefix, directory):
 
         masking_cli = distutils.spawn.find_executable("DiffusionWeightedVolumeMasking")
 
+        if masking_cli is None:
+            print("Missing 'DiffusionWeightedVolumeMasking' executable. Please specify a mask, or install the SlicerDMRI extension.")
+            # Use sys.exit here because python backtrace isn't very useful for users.
+            sys.exit(1)
+
         args = [masking_cli, dwi, bse, mask]
 
         try:
@@ -53,7 +58,7 @@ def load_mask(mask, dwi, prefix, directory):
         return img[0]
 
     else:
-        print("Invalid file format")
+        print("Invalid file format for file: ", mask)
         exit(1)
 
 
