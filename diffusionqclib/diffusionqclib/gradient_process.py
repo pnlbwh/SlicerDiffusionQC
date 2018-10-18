@@ -210,7 +210,7 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     else:
         directory = outDir
 
-    prefix = os.path.basename(os.path.splitext(dwiPath)[0])
+    prefix = os.path.basename(os.path.splitext(dwiPath))[0]
 
     # Load/create mask
     M = load_mask(maskPath, dwiPath, prefix, directory)
