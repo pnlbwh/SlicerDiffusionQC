@@ -13,7 +13,7 @@ On the other hand, the SlicerDiffusionQC is a faster, cleaner, and more user ori
 
 Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School).
 
-![Screenshot of DiffusionQC gradient-check module](https://github.com/pnlbwh/SlicerDiffusionQC/tree/master/Misc/DiffusionQC-screenshot.png)
+![Screenshot of DiffusionQC gradient-check module](Misc/DiffusionQC-screenshot.png)
 
 
 
