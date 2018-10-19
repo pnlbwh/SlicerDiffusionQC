@@ -96,7 +96,8 @@ Follow STDOUT to see success.
 
 ```
 tar -xzvf git-lfs-linux-*
-install.sh
+PREFIX=$HOME ./install.sh
+export PATH=$PATH:$HOME/bin/
 git lfs install
 
 ```
