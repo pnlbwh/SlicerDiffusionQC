@@ -27,6 +27,9 @@ Psychiatry Neuroimaging Laboratory, Brigham and Women's Hospital and Harvard Med
 
 # Installation
 
+System requirement: The program has been extensively tested on Linux Centos7. However, it should run well on any Linux
+machine. But, we do not have test/support for other platforms (MAC, Windows) yet. We are working on it.
+
 Download [Slicer-4.9](https://download.slicer.org/). Slicer Diffusion QC Tool is available as an extension to Slicer. From Extension Manager in Slicer, search `DiffusionQC` and install.
 
 
