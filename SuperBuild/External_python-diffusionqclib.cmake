@@ -22,7 +22,7 @@ set(_install_deps COMMAND ${CMAKE_COMMAND}
 set(_install_pynrrd COMMAND ${CMAKE_COMMAND}
     -E env
     PYTHONNOUSERSITE=1
-    ${PYTHON_EXECUTABLE} -m pip install git+https://github.com/mhe/pynrrd.git@eeb4df8dc96eff2d6aaa0e419e04c469daf78cdc
+    ${PYTHON_EXECUTABLE} -m pip install pynrrd
                          --prefix ${python_packages_DIR_NATIVE_DIR} --upgrade
     )
 
