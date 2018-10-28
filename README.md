@@ -212,4 +212,7 @@ Clone the repository `git clone https://github.com/pnlbwh/SlicerDiffusionQC.git`
 The [SlicerExecutionModel wrapper](diffusionQC/diffusionQC.xml) describes the input/output of this script for use by Slicer. The Slicer scripted GUI module code is within the SlicerDiffusionQC subdirectory.
 
 
+# Submit issues:
+
+Feel free to submit an issue on this github repository. We shall get back to you as early as we can.
 
