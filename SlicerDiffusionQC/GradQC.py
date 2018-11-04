@@ -337,39 +337,44 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     if not success or not self.autoMode: # (not self.autoMode) = True when check box unchecked
     
     '''
+     
+    # Determine prefix and directory
+    if self.outputDirSelector.currentPath is None:
+        directory = os.path.dirname(os.path.abspath(dwiPath))
+        self.outputDirSelector.currentPath= directory
+    else:
+        directory = self.outputDirSelector.currentPath
+        if not os.path.exists(directory):
+            os.mkdir(directory)
 
-    if not self.autoMode: # (not self.autoMode) = True when check box unchecked
-        
-        # Determine prefix and directory
-        if self.outputDirSelector.currentPath is None:
-            directory = os.path.dirname(os.path.abspath(dwiPath))
-            self.outputDirSelector.currentPath= directory
-        else:
-            directory = self.outputDirSelector.currentPath
-            if not os.path.exists(directory):
-                os.mkdir(directory)
-
-        prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
-
+    prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
+    
+    if self.createMask:
         self.maskSelector.currentPath= os.path.join(directory, prefix+'_mask'+'.nrrd')        
+    
+    diffusionQCcli = slicer.modules.diffusionqc
+    
+    # Slicer 4.11
+    cliNode= slicer.cli.run(diffusionQCcli, parameters)
 
-        diffusionQCcli = slicer.modules.diffusionqc
-        cliNode= slicer.cli.run(diffusionQCcli, parameters)
+    # Slicer 4.9    
+    # cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
+    
 
-        # Track progress of the algorithm
-        self.progressBar.setCommandLineModuleNode(cliNode)
+    # Track progress of the algorithm
+    self.progressBar.setCommandLineModuleNode(cliNode)
 
-        def observeStatus(caller,_):
-          # Check if CLI completed w/o any error
-          if caller.GetStatusString()=='Completed' and cliNode.GetErrorText()=='':
+    def observeStatus(caller,_):
+      # Check if CLI completed w/o any error
+      if caller.GetStatusString()=='Completed' and cliNode.GetErrorText()=='':
 
-            # If mask was not given, created in the pipeline, load now
-            if self.createMask:
-                self.onSelectMask()
+        # If mask was not given, created in the pipeline, load now
+        if self.createMask:
+            self.onSelectMask()
 
-            self.GUI()
+        self.GUI()
 
-        cliNode.AddObserver('ModifiedEvent', observeStatus)
+    cliNode.AddObserver('ModifiedEvent', observeStatus)
 
 
   def GUI(self):
