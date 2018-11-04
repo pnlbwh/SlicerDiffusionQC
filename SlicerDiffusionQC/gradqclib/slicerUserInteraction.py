@@ -13,12 +13,14 @@ UNSURE= '\tUnsure' # \t is for visually separating Unsure gradients
 
 class slicerGUI():
 
-  def slicerUserInterface(self, userDWIpath, userDWInode, label, summary,
+  def slicerUserInterface(self, userDWIpath, userOutPath, userDWInode, label, summary,
                           discardButton, keepButton, sureButton, unsureButton, nextButton, resetButton, saveButton):
 
-    self.dwiPath= userDWIpath
-    self.prefix = os.path.basename(self.dwiPath.split('.')[0])
-    self.directory = os.path.dirname(os.path.abspath(self.dwiPath))
+    self.userDWIpath= userDWIpath
+
+    self.prefix = os.path.basename(self.userDWIpath.split('.')[0])
+    self.directory = userOutPath
+
     self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))
     self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
     self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
@@ -142,7 +144,7 @@ class slicerGUI():
 
   def finishInteraction(self):
     # Return only if pushbutton save is pressed
-    hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.dwiPath)
+    hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
     saveResults(self.prefix, self.directory, self.deletion, None, None, hdr, mri, grad_axis, True)
 
 
@@ -287,19 +289,23 @@ class slicerGUI():
   def nextReview(self):
 
     arr = self.dwiNode.GetDiffusionWeightedVolumeDisplayNode()
-
+    # Mark the corresponding gradient as fail
     diffusion_index = arr.GetDiffusionComponent()
+    
 
     if (self.confidence==0).any( ):
-       if diffusion_index<len(self.confidence)-1:
-           i=diffusion_index+1
-       else:
-           i=0 # force to start from beginning
+      if diffusion_index<len(self.confidence)-1:
+          i=diffusion_index+1
+      else:
+          i=0
+      
+      while self.confidence[i]: # While sure, continue looping for the next unsure
+        i+=1
 
-       while self.confidence[i]: # While sure, continue looping for the next unsure
-           i+=1
+       # if i== len(self.confidence):
+       #   i= 0 # force to start from beginning
 
-       if i!=diffusion_index:
+      if i!=diffusion_index:
         arr.SetDiffusionComponent(i)
         self.plotUpdate(i)
 

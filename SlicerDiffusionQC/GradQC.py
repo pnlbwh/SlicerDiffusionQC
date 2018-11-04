@@ -315,6 +315,11 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # if self.autoMode= False (check box unchecked), then automatic processing triggers, otherwise visual
     parameters["auto"] = not self.autoMode
+    
+    '''
+    # The following block causes GUI to fail if intermediate files from another case exists in the same directory
+    # So we are removing it
+    # Now processing will run whenever 'Process' button is pressed
 
     # if result files exist already, don't call cli-module again
     files= os.listdir(os.path.dirname(self.inputSelector.currentPath))
@@ -330,9 +335,26 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
     # if results don't exist or autoMode is specified, run cli-module, this may overwrite previous results
     if not success or not self.autoMode: # (not self.autoMode) = True when check box unchecked
+    
+    '''
+
+    if not self.autoMode: # (not self.autoMode) = True when check box unchecked
+        
+        # Determine prefix and directory
+        if self.outputDirSelector.currentPath is None:
+            directory = os.path.dirname(os.path.abspath(dwiPath))
+            self.outputDirSelector.currentPath= directory
+        else:
+            directory = self.outputDirSelector.currentPath
+            if not os.path.exists(directory):
+                os.mkdir(directory)
+
+        prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
+
+        self.maskSelector.currentPath= os.path.join(directory, prefix+'_mask'+'.nrrd')        
 
         diffusionQCcli = slicer.modules.diffusionqc
-        cliNode = slicer.cli.run(diffusionQCcli, parameters=parameters)
+        cliNode= slicer.cli.run(diffusionQCcli, parameters)
 
         # Track progress of the algorithm
         self.progressBar.setCommandLineModuleNode(cliNode)
@@ -343,13 +365,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
             # If mask was not given, created in the pipeline, load now
             if self.createMask:
-
-              # Determine prefix and directory
-              directory = os.path.dirname(os.path.abspath(self.inputSelector.currentPath))
-              prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
-
-              self.maskSelector.currentPath= os.path.join(directory, prefix+'_mask'+'.nrrd')
-              self.onSelectMask()
+                self.onSelectMask()
 
             self.GUI()
 
@@ -360,8 +376,8 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
       # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
       if self.autoMode:  # self.autoMode = True when check box checked
-
-        slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.dwiNode, self.decisionLabel,
+        
+        slicerGUI().slicerUserInterface(self.inputSelector.currentPath, self.outputDirSelector.currentPath, self.dwiNode, self.decisionLabel,
                                         self.summaryLabel, self.discardButton, self.keepButton,
                                         self.sureButton, self.unsureButton,
                                         self.nextReviewButton, self.resetResultsButton, self.saveResultsButton)
