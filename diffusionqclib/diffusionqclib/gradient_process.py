@@ -209,6 +209,8 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
         directory = os.path.dirname(os.path.abspath(dwiPath))
     else:
         directory = outDir
+        if not os.path.exists(directory):
+            os.mkdir(outDir)
 
     prefix = os.path.basename(os.path.splitext(dwiPath)[0])
 

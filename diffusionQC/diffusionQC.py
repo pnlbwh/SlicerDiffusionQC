@@ -50,10 +50,6 @@ class QC(cli.Application):
         #    warnings.warn("--test is unimplemented for the CLI mode")
         #    sys.exit(0)
 
-        self.dwi = self.dwi
-        self.mask = self.mask
-        self.out = self.out
-
         process(self.dwi, self.mask, self.out, self.autoMode)
 
 
