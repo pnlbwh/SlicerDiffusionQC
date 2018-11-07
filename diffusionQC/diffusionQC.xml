@@ -34,7 +34,7 @@
       <name>out</name>
       <longflag>out</longflag>
       <label>Output directory</label>
-      <channel>out</channel>
+      <channel>input</channel>
       <description><![CDATA[Path to results file]]></description>
     </directory>
 
