@@ -145,7 +145,7 @@ class slicerGUI():
   def finishInteraction(self):
     # Return only if pushbutton save is pressed
     hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
-    saveResults(self.prefix, self.directory, self.deletion, None, None, hdr, mri, grad_axis, True)
+    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, hdr, mri, grad_axis, True)
 
 
 

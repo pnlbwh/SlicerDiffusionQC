@@ -4,14 +4,18 @@ import os
 import time
 
 
-def saveDecisions(prefix, directory, deletion):
+def saveDecisions(prefix, directory, deletion, confidence):
 
-    f = open(os.path.join(directory, prefix+'_QC.csv'), "w")
-    f.write('Gradient #, Pass 1\Fail 0\n')
+    fqc = open(os.path.join(directory, prefix+'_QC.csv'), "w")
+    fcon = open(os.path.join(directory, prefix+'_confidence.csv'), "w")
+    fqc.write('Gradient #, Pass 1\Fail 0\n')
+    fcon.write('Gradient #, Sure 1\Unsure 0\n')
     for i in range(len(deletion)):
-        f.write(str(i) + ',' + str(deletion[i]) + '\n')
+        fqc.write(str(i) + ',' + str(deletion[i]) + '\n')
+        fcon.write(str(i) + ',' + str(confidence[i]) + '\n')
 
-    f.close()
+    fqc.close()
+    fcon.close()
 
 
 def saveTemporary(prefix, directory, deletion, KLdiv, confidence):
@@ -67,5 +71,5 @@ def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_a
     
     # In autoMode, writes out the modified dwi image
     if autoMode:
-        saveDecisions(prefix, directory, deletion)
+        saveDecisions(prefix, directory, deletion, confidence)
         saveDWI(prefix, directory, deletion, hdr, mri, grad_axis)
