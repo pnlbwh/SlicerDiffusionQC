@@ -296,7 +296,7 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
             good_bad[k] = 0
 
         # Sure/unsure classification
-        if (QC[k, 0] >= 0.05 and QC[k, 0]<= 0.3) and (QC[k, 1] >= 5 and QC[k, 0]<= 20):
+        if (QC[k, 0] >= 0.05 and QC[k, 0]<= 0.2) and (QC[k, 1] >= 5 and QC[k, 1]<= 20):
             confidence[k]= 0
 
     print("\n\nPrediction completed ...\n\n")
