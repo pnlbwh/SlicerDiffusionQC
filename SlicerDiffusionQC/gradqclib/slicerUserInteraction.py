@@ -24,6 +24,7 @@ class slicerGUI():
     self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))
     self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
     self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
+    bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
 
     self.qualityBackUp= self.deletion.copy()
     self.confidenceBackUp= self.confidence.copy()
@@ -54,6 +55,10 @@ class slicerGUI():
     arrY3 = vtk.vtkStringArray()
     arrY3.SetName("Marked for deletion")
     table.AddColumn(arrY3)
+    
+    arrY4 = vtk.vtkStringArray()
+    arrY4.SetName("b value")
+    table.AddColumn(arrY4)
 
     table.SetNumberOfRows(self.KLdiv.shape[0])
     for i in range(self.KLdiv.shape[0]):
@@ -63,7 +68,8 @@ class slicerGUI():
       table.SetValue(i, 1, 'Pass' if self.deletion[i] else FAIL)
       table.SetValue(i, 2, 'Sure' if self.confidence[i] else UNSURE)
       table.SetValue(i, 3, 'X' if not self.deletion[i] else ' ')
-
+      table.SetValue(i, 4, str(bvals[i]))
+      
     currentLayout = slicer.app.layoutManager().layout
     layoutWithTable = slicer.modules.tables.logic().GetLayoutWithTable(currentLayout)
     slicer.app.layoutManager().setLayout(layoutWithTable)
