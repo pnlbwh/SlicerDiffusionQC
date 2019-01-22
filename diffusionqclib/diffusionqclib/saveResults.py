@@ -4,24 +4,25 @@ import os
 import time
 
 
-def saveDecisions(prefix, directory, deletion, confidence):
+def saveDecisions(prefix, directory, deletion, confidence, bvals):
 
     fqc = open(os.path.join(directory, prefix+'_QC.csv'), "w")
     fcon = open(os.path.join(directory, prefix+'_confidence.csv'), "w")
-    fqc.write('Gradient #, Pass 1\Fail 0\n')
-    fcon.write('Gradient #, Sure 1\Unsure 0\n')
+    fqc.write('Gradient #, Pass 1\Fail 0, b value\n')
+    fcon.write('Gradient #, Sure 1\Unsure 0, b value\n')
     for i in range(len(deletion)):
-        fqc.write(str(i) + ',' + str(deletion[i]) + '\n')
-        fcon.write(str(i) + ',' + str(confidence[i]) + '\n')
+        fqc.write(str(i) + ',' + str(deletion[i]) + ','+ str(bvals[i])+'\n')
+        fcon.write(str(i) + ',' + str(confidence[i]) + ','+ str(bvals[i])+'\n')
 
     fqc.close()
     fcon.close()
 
 
-def saveTemporary(prefix, directory, deletion, KLdiv, confidence):
+def saveTemporary(prefix, directory, deletion, KLdiv, confidence, bvals):
     np.save(os.path.join(directory, prefix + '_QC.npy'), deletion)
     np.save(os.path.join(directory, prefix + '_KLdiv.npy'), KLdiv)
     np.save(os.path.join(directory, prefix + '_confidence.npy'), confidence)
+    np.save(os.path.join(directory, prefix + '_bvals.npy'), bvals)
 
 
 def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
@@ -65,11 +66,11 @@ def saveDWI(prefix, directory, deletion, hdr_in, mri_in, grad_axis):
     nrrd.write(os.path.join(directory, prefix+'_modified.nrrd'), mri_out, header=hdr_out, compression_level = 1)
     print("Elapsed time in saving results %s seconds\n\n" %(time.time() - start_time))
 
-def saveResults(prefix, directory, deletion, KLdiv, confidence, hdr, mri, grad_axis, autoMode):
+def saveResults(prefix, directory, deletion, KLdiv, confidence, bvals, hdr, mri, grad_axis, autoMode):
    
-    saveTemporary(prefix, directory, deletion, KLdiv, confidence)
+    saveTemporary(prefix, directory, deletion, KLdiv, confidence, bvals)
     
     # In autoMode, writes out the modified dwi image
     if autoMode:
-        saveDecisions(prefix, directory, deletion, confidence)
+        saveDecisions(prefix, directory, deletion, confidence, bvals)
         saveDWI(prefix, directory, deletion, hdr, mri, grad_axis)

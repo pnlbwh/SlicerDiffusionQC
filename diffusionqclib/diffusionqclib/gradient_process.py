@@ -241,7 +241,7 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     # Calculating scaled b values
     scaled_b_values = np.zeros(mri.shape[grad_axis], dtype=float)
     for i in range(mri.shape[grad_axis]):
-        scaled_b_values[i] = b_value * np.linalg.norm(gradients[i, :]) ** 2
+        scaled_b_values[i] = np.round(b_value * np.linalg.norm(gradients[i, :]) ** 2)
 
     # Finding b-shell
     b_shell = find_b_shell(scaled_b_values.copy())
@@ -307,4 +307,4 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
     # Save QC results
     # Pass prefix and directory to saveResults()
-    saveResults(prefix, directory, good_bad, S, confidence, hdr, mri, grad_axis, autoMode)
+    saveResults(prefix, directory, good_bad, S, confidence, scaled_b_values, hdr, mri, grad_axis, autoMode)
