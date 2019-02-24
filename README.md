@@ -2,7 +2,7 @@
 
 # SlicerDiffusionQC
 
-[![DOI](https://zenodo.org/badge/143348297.svg)](https://zenodo.org/badge/latestdoi/143348297) [![Python](https://img.shields.io/badge/Python-2.7%20%7C%203.6-green.svg)]() [![Platform](https://img.shields.io/badge/Platform-linux--64%20%7C%20osx--64-orange.svg)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]()
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.2576412.svg)](https://doi.org/10.5281/zenodo.2576412) [![Python](https://img.shields.io/badge/Python-2.7%20%7C%203.6-green.svg)]() [![Platform](https://img.shields.io/badge/Platform-linux--64%20%7C%20osx--64-orange.svg)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
 This is a complete slicer module for quality checking of diffusion weighted MRI. It
 identifies bad gradients by comparing distance of each gradient to a median line. The median line is obtained from
@@ -24,7 +24,7 @@ Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Har
 
 If you use our software in your research, please cite as below:
 
-Tashrif Billah, Isaiah Norton, Yogesh Rathi, Sylvain Bouix, and Carquex Come, Slicer Diffusion QC Tool, https://github.com/pnlbwh/SlicerDiffusionQC, 2018, DOI: 10.5281/zenodo.2576413
+Tashrif Billah, Isaiah Norton, Yogesh Rathi, Sylvain Bouix, and Carquex Come, Slicer Diffusion QC Tool, https://github.com/pnlbwh/SlicerDiffusionQC, 2018, DOI: 10.5281/zenodo.2576412
 
 
 # Installation
