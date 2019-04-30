@@ -1,8 +1,28 @@
 ![](Misc/pnl-bwh-hms.png)
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.2576412.svg)](https://doi.org/10.5281/zenodo.2576412) [![Python](https://img.shields.io/badge/Python-2.7%20%7C%203.6-green.svg)]() [![Platform](https://img.shields.io/badge/Platform-linux--64%20%7C%20osx--64-orange.svg)]()
+
+Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School).
+
+
+Table of Contents
+=================
+
+   * [SlicerDiffusionQC](#slicerdiffusionqc)
+   * [Citation](#citation)
+   * [Installation](#installation)
+   * [Usage](#usage)
+   * [Tests](#tests)
+   * [Automatic processing:](#automatic-processing)
+   * [Slicer GUI manual processing:](#slicer-gui-manual-processing)
+   * [File description](#file-description)
+   * [Submit issues](#submit-issues)
+
+Table of Contents created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
+
 # SlicerDiffusionQC
 
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.2576412.svg)](https://doi.org/10.5281/zenodo.2576412) [![Python](https://img.shields.io/badge/Python-2.7%20%7C%203.6-green.svg)]() [![Platform](https://img.shields.io/badge/Platform-linux--64%20%7C%20osx--64-orange.svg)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
 This is a complete slicer module for quality checking of diffusion weighted MRI. It
 identifies bad gradients by comparing distance of each gradient to a median line. The median line is obtained from
@@ -14,7 +34,6 @@ of Yogesh Rathi, Asst. Professor, Harvard Medical School.
 The MATLAB SignalDropQCTool is available at [here](https://github.com/pnlbwh/SignalDropQCTool).
 On the other hand, the SlicerDiffusionQC is a faster, cleaner, and more user oriented version of that software.
 
-Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School).
 
 ![Screenshot of DiffusionQC gradient-check module](Misc/DiffusionQC-screenshot.png)
 
@@ -24,8 +43,7 @@ Developed by Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Har
 
 If you use our software in your research, please cite as below:
 
-Tashrif Billah, Isaiah Norton, Yogesh Rathi, Sylvain Bouix, and Carquex Come, Slicer Diffusion QC Tool, https://github.com/pnlbwh/SlicerDiffusionQC, 2018, DOI: 10.5281/zenodo.2576412
-
+Billah, Tashrif; Norton, Isaiah; Rathi, Yogesh; Bouix, Sylvain, Come, Carquex; Slicer Diffusion QC Tool, https://github.com/pnlbwh/SlicerDiffusionQC, 2018, DOI: 10.5281/zenodo.2576412
 
 # Installation
 
@@ -66,12 +84,12 @@ Switches:
 ```
 
 
-# Testing installation
+# Tests
 
 
 i) Download the [sample](https://github.com/pnlbwh/SlicerDiffusionQC/blob/master/Test/Baseline/SiemensTrio-Syngo2004A-1.nrrd) dwi image. 
 Type `GradQC` in `Slicer>Modules` search icon, and select it from the drop down menu. Load the sample dwi, check `Create the mask` and hit `Process`. 
-If the process completes without any error, installation is successfull. You can observe the output files in sample dwi image directory.
+If the process completes without any error, installation is successful. You can observe the output files in sample dwi image directory.
 
 
 ii) From the command line, you can test as follows:
@@ -108,7 +126,7 @@ git lfs install
 ```
 
 
-# For automatic processing:
+# Automatic processing:
 
 The following are example command line calls:
 
@@ -134,7 +152,7 @@ iv) When you want to specify an output diretory:
 The above command line calls save temporary `.npy` files and final results- `inputPrefix_modified.nrrd` and `inputPrefix_QC.csv`.
 
 
-# For Slicer GUI manual processing:
+# Slicer GUI manual processing:
 
 1. Type `GradQC` in `Slicer>Modules` search icon, and select it from the drop down menu.
 
@@ -214,7 +232,7 @@ Clone the repository `git clone https://github.com/pnlbwh/SlicerDiffusionQC.git`
 The [SlicerExecutionModel wrapper](diffusionQC/diffusionQC.xml) describes the input/output of this script for use by Slicer. The Slicer scripted GUI module code is within the SlicerDiffusionQC subdirectory.
 
 
-# Submit issues:
+# Submit issues
 
 Feel free to submit an issue on this github repository. We shall get back to you as early as we can.
 
