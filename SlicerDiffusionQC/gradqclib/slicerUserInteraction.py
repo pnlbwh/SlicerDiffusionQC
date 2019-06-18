@@ -24,7 +24,7 @@ class slicerGUI():
     self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))
     self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
     self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
-    bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
+    self.bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
 
     self.qualityBackUp= self.deletion.copy()
     self.confidenceBackUp= self.confidence.copy()
@@ -68,7 +68,7 @@ class slicerGUI():
       table.SetValue(i, 1, 'Pass' if self.deletion[i] else FAIL)
       table.SetValue(i, 2, 'Sure' if self.confidence[i] else UNSURE)
       table.SetValue(i, 3, 'X' if not self.deletion[i] else ' ')
-      table.SetValue(i, 4, str(bvals[i]))
+      table.SetValue(i, 4, str(self.bvals[i]))
       
     currentLayout = slicer.app.layoutManager().layout
     layoutWithTable = slicer.modules.tables.logic().GetLayoutWithTable(currentLayout)
@@ -151,7 +151,7 @@ class slicerGUI():
   def finishInteraction(self):
     # Return only if pushbutton save is pressed
     hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
-    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, hdr, mri, grad_axis, True)
+    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, self.bvals, hdr, mri, grad_axis, True)
 
 
 
