@@ -24,7 +24,7 @@ class slicerGUI():
     self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))
     self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
     self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
-    bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
+    self.bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
 
     self.qualityBackUp= self.deletion.copy()
     self.confidenceBackUp= self.confidence.copy()
@@ -68,7 +68,7 @@ class slicerGUI():
       table.SetValue(i, 1, 'Pass' if self.deletion[i] else FAIL)
       table.SetValue(i, 2, 'Sure' if self.confidence[i] else UNSURE)
       table.SetValue(i, 3, 'X' if not self.deletion[i] else ' ')
-      table.SetValue(i, 4, str(bvals[i]))
+      table.SetValue(i, 4, str(self.bvals[i]))
       
     currentLayout = slicer.app.layoutManager().layout
     layoutWithTable = slicer.modules.tables.logic().GetLayoutWithTable(currentLayout)
@@ -142,17 +142,27 @@ class slicerGUI():
     saveButton.connect('clicked(bool)', self.finishInteraction)
     resetButton.connect('clicked(bool)', self.resetResults)
 
-    # TODO: Use the above handles to disconnect all signals after 'Save' (not much necessary)
+    # Following signal can be potentially used to disconnect all the above after 'Save'/'File-->Close Scene'
+    # slicer.mrmlScene.AddObserver(slicer.vtkMRMLScene.EndCloseEvent, self.disconnectHandles)
 
     # Displaying 0th gradient graph as default
     self.plotUpdate(0)
 
 
+  # Function for disconnecting table, figure
+  # def disconnectHandles(self, caller, eventId):
+  #   self.tableHandle.disconnect('selectionChanged()')
+  #   self.figureHandle.disconnect('dataSelected(vtkStringArray*, vtkCollection*)')
+  #   exit(0)
+
+
   def finishInteraction(self):
     # Return only if pushbutton save is pressed
     hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
-    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, hdr, mri, grad_axis, True)
+    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, self.bvals, hdr, mri, grad_axis, True)
 
+    # Should we disconnect table, figure now?
+    # self.disconnectHandles(None, None)
 
 
   # Getting specific point ID from graph
@@ -237,7 +247,12 @@ class slicerGUI():
   # Switching among gradients
   def gradientUpdate(self):
 
-      index = self.tableHandle.selectedIndexes()[0]
+      # Hack for omitting error when 'File-->Close Scene'
+      try:
+        index = self.tableHandle.selectedIndexes()[0]
+      except:
+        exit(0)
+
       diffusion_index = index.row( )-1
 
 

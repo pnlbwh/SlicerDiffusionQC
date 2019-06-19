@@ -15,15 +15,8 @@ file(TO_NATIVE_PATH ${python_packages_DIR} python_packages_DIR_NATIVE_DIR)
 set(_install_deps COMMAND ${CMAKE_COMMAND}
     -E env
     PYTHONNOUSERSITE=1
-    ${PYTHON_EXECUTABLE} -m pip install plumbum nibabel
+    ${PYTHON_EXECUTABLE} -m pip install plumbum nibabel pynrrd
                                 --prefix "${python_packages_DIR_NATIVE_DIR}" --upgrade
-    )
-
-set(_install_pynrrd COMMAND ${CMAKE_COMMAND}
-    -E env
-    PYTHONNOUSERSITE=1
-    ${PYTHON_EXECUTABLE} -m pip install pynrrd
-                         --prefix ${python_packages_DIR_NATIVE_DIR} --upgrade
     )
 
 set(_install_diffusionqclib COMMAND ${CMAKE_COMMAND}
@@ -40,7 +33,6 @@ ExternalProject_Add(${proj}
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E  echo_append ""
     ${_install_deps}
-    ${_install_pynrrd}
     ${_install_diffusionqclib}
     DEPENDS
         ${${proj}_DEPENDENCIES}
