@@ -142,10 +142,18 @@ class slicerGUI():
     saveButton.connect('clicked(bool)', self.finishInteraction)
     resetButton.connect('clicked(bool)', self.resetResults)
 
-    # TODO: Use the above handles to disconnect all signals after 'Save' (not much necessary)
+    # Following signal can be potentially used to disconnect all the above after 'Save'/'File-->Close Scene'
+    # slicer.mrmlScene.AddObserver(slicer.vtkMRMLScene.EndCloseEvent, self.disconnectHandles)
 
     # Displaying 0th gradient graph as default
     self.plotUpdate(0)
+
+
+  # Function for disconnecting table, figure
+  # def disconnectHandles(self, caller, eventId):
+  #   self.tableHandle.disconnect('selectionChanged()')
+  #   self.figureHandle.disconnect('dataSelected(vtkStringArray*, vtkCollection*)')
+  #   exit(0)
 
 
   def finishInteraction(self):
@@ -153,6 +161,8 @@ class slicerGUI():
     hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
     saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, self.bvals, hdr, mri, grad_axis, True)
 
+    # Should we disconnect table, figure now?
+    # self.disconnectHandles(None, None)
 
 
   # Getting specific point ID from graph
@@ -237,7 +247,12 @@ class slicerGUI():
   # Switching among gradients
   def gradientUpdate(self):
 
-      index = self.tableHandle.selectedIndexes()[0]
+      # Hack for omitting error when 'File-->Close Scene'
+      try:
+        index = self.tableHandle.selectedIndexes()[0]
+      except:
+        exit(0)
+
       diffusion_index = index.row( )-1
 
 
