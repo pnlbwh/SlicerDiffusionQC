@@ -340,7 +340,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
      
     # Determine prefix and directory
     if self.outputDirSelector.currentPath is None:
-        directory = os.path.dirname(os.path.abspath(dwiPath))
+        directory = os.path.dirname(os.path.abspath(self.inputSelector.currentPath))
         self.outputDirSelector.currentPath= directory
     else:
         directory = self.outputDirSelector.currentPath
@@ -354,11 +354,13 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
     
     diffusionQCcli = slicer.modules.diffusionqc
     
-    # Slicer 4.11
-    cliNode= slicer.cli.run(diffusionQCcli, parameters)
 
-    # Slicer 4.9    
-    # cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
+    if slicer.app.minorVersion>10:
+      # Slicer 4.11
+      cliNode= slicer.cli.run(diffusionQCcli, parameters)
+    else:
+      # Slicer 4.9, 4.10
+      cliNode= slicer.cli.run(diffusionQCcli, None, parameters)
     
 
     # Track progress of the algorithm
