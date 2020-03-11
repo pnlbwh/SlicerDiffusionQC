@@ -18,7 +18,7 @@ class slicerGUI():
 
     self.userDWIpath= userDWIpath
 
-    self.prefix = os.path.basename(self.userDWIpath.split('.')[0])
+    self.prefix = os.path.basename(os.path.splitext(self.userDWIpath)[0])
     self.directory = userOutPath
 
     self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))

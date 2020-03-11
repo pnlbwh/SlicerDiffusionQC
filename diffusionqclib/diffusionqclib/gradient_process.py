@@ -50,7 +50,7 @@ def load_mask(mask, dwi, prefix, directory):
 
 
     if mask.endswith('.nii') or mask.endswith('.nii.gz'):
-        img = nib.load(mask)  # MRI loaded as a 256 x 256 x 176 volume
+        img = nib.load(str(mask))  # MRI loaded as a 256 x 256 x 176 volume
         return img.get_data()
 
     elif mask.endswith('.nrrd') or mask.endswith('.nhdr'):

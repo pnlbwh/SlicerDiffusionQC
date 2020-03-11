@@ -347,7 +347,7 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
         if not os.path.exists(directory):
             os.mkdir(directory)
 
-    prefix = os.path.basename(self.inputSelector.currentPath.split('.')[0])
+    prefix = os.path.basename(os.path.splitext(self.inputSelector.currentPath)[0])
     
     if self.createMask:
         self.maskSelector.currentPath= os.path.join(directory, prefix+'_mask'+'.nrrd')        
