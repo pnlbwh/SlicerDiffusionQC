@@ -2,7 +2,7 @@
 
 import nrrd
 import numpy as np
-import sys
+import sys, os
 
 from dwi_attributes import dwi_attributes
 
@@ -24,7 +24,7 @@ def main():
 
     mri_out= np.delete(mri_in, indices, axis= axialViewAxis)
 
-    nrrd.write(img_file.split('.')[0]+'_test.nrrd', mri_out, header= hdr_out, compression_level= 1)
+    nrrd.write(os.path.splitext(img_file)[0]+'_test.nrrd', mri_out, header= hdr_out, compression_level= 1)
 
 
 if __name__== '__main__':
