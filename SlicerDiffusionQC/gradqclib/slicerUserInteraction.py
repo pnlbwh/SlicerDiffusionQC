@@ -18,13 +18,13 @@ class slicerGUI():
 
     self.userDWIpath= userDWIpath
 
-    self.prefix = os.path.basename(os.path.splitext(self.userDWIpath)[0])
-    self.directory = userOutPath
+    self.inPrefix = os.path.splitext(os.path.splitext(self.userDWIpath)[0])[0]
+    self.outPrefix= os.path.join(userOutPath, os.path.basename(self.inPrefix))
 
-    self.deletion= np.load(os.path.join(self.directory, self.prefix+'_QC.npy'))
-    self.confidence= np.load(os.path.join(self.directory, self.prefix+'_confidence.npy'))
-    self.KLdiv= np.load(os.path.join(self.directory, self.prefix+'_KLdiv.npy'))
-    self.bvals= np.load(os.path.join(self.directory, self.prefix+'_bvals.npy'))
+    self.deletion= np.load(self.outPrefix+'_QC.npy')
+    self.confidence= np.load(self.outPrefix+'_confidence.npy')
+    self.KLdiv= np.load(self.outPrefix+'_KLdiv.npy')
+    self.bvals= np.load(self.outPrefix+'_bvals.npy')
 
     self.qualityBackUp= self.deletion.copy()
     self.confidenceBackUp= self.confidence.copy()
@@ -158,8 +158,8 @@ class slicerGUI():
 
   def finishInteraction(self):
     # Return only if pushbutton save is pressed
-    hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath)
-    saveResults(self.prefix, self.directory, self.deletion, None, self.confidence, self.bvals, hdr, mri, grad_axis, True)
+    hdr, mri, grad_axis, _, _, _ = dwi_attributes(self.userDWIpath, self.inPrefix)
+    saveResults(self.userDWIpath, self.outPrefix, self.deletion, None, self.confidence, self.bvals, hdr, mri, grad_axis, True)
 
     # Should we disconnect table, figure now?
     # self.disconnectHandles(None, None)
