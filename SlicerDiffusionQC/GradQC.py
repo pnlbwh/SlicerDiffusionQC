@@ -3,6 +3,7 @@ import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
 from gradqclib.slicerUserInteraction import slicerGUI
+from diffusionqclib.nhdr_write import nhdr_write
 
 #
 # GradQC
@@ -285,9 +286,17 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
 
   def onSelectInput(self):
-
+    
+    inPrefix= os.path.splitext(os.path.splitext(self.inputSelector.currentPath)[0])[0]
+    file_name= self.inputSelector.currentPath 
+    if '.nii' in self.inputSelector.currentPath:
+        file_name= inPrefix+'.nhdr'
+        if not os.path.exists(file_name): 
+            nhdr_write(self.inputSelector.currentPath, inPrefix+'.bval', inPrefix+'.bvec', file_name)
+   
+    
     # Load dwi into slicer
-    _, self.dwiNode= slicer.util.loadVolume(self.inputSelector.currentPath, returnNode= True)
+    _, self.dwiNode= slicer.util.loadVolume(file_name, returnNode= True)
     self.dwiNode.GetDiffusionWeightedVolumeDisplayNode().InterpolateOff() # RA's prefer looking at the image this way
 
 
