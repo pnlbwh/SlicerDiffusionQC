@@ -39,7 +39,7 @@ identifies bad gradients by comparing distance of each gradient to a median line
 After above processing, it allows user to manually review each gradient: keep or discard them.
 
 A similar software, based on MATLAB environment, was developed earlier by a group
-of Yogesh Rathi, Asst. Professor, Harvard Medical School.
+of Yogesh Rathi, Associate Professor, Harvard Medical School.
 The MATLAB SignalDropQCTool is available at [here](https://github.com/pnlbwh/SignalDropQCTool).
 On the other hand, the SlicerDiffusionQC is a faster, cleaner, and more user oriented version of that software.
 
