@@ -18,15 +18,14 @@ Table of Contents
    * [NIFTI support](#nifti-support)
    * [Executables](#executables)
    * [Development mode](#development-mode)
-      * [Clone the repository](#clone-the-repository)
+      * [Clone repository](#clone-repository)
       * [Download Slicer](#download-slicer)
-      * [Python 2.7](#python-27)
-         * [Independent Python 2.7](#independent-python-27)
-         * [Slicer Python 2.7](#slicer-python-27)
-      * [GUI module](#gui-module)
-      * [With SlicerDMRI](#with-slicerdmri)
+      * [Run using Python](#run-using-python)
+         * [Independent](#independent)
+         * [Slicer](#slicer)
+      * [Work on GUI module](#work-on-gui-module)
+      * [Create mask using SlicerDMRI](#create-mask-using-slicerdmri)
    * [Submit issues](#submit-issues)
-
 
 Table of Contents created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -268,7 +267,7 @@ The Slicer scripted GUI module code is within the SlicerDiffusionQC subdirectory
 
 We welcome any contribution to this software. To facilitate contribution, we are providing the following instruction.
 
-## Clone the repository
+## Clone repository
 
 > git clone https://github.com/pnlbwh/SlicerDiffusionQC.git    
 
@@ -279,12 +278,12 @@ The modules of interest are `diffusionQC/diffusionQC.py` and `SlicerDiffusionQC/
 Download a fresh [Slicer-4.10.0](https://download.slicer.org/). It may be useful to remove your `~/.config/NA-MIC` directory 
 (`mv ~/.config/NA-MIC ~/.config/NA-MIC.bak`) so any old settings cannot get into the fresh Slicer environment. 
 
-## Python 2.7
+## Run using Python
 
 `diffusionQC/diffusionQC.py` module requires a Python 2.7 interpreter. You can use an independent Python 2.7 or 
 the one that came with Slicer download. For development work with Python 2.7, please make sure to provide a mask.
 
-### Independent Python 2.7
+### Independent
 
 Install [Python 2.7](https://docs.conda.io/en/latest/miniconda.html) with the following packages:
 
@@ -293,11 +292,12 @@ Install [Python 2.7](https://docs.conda.io/en/latest/miniconda.html) with the fo
 Then
 
 ```bash
-PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/ ~/miniconda2/bin/python \
+export PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/
+~/miniconda2/bin/python \
 path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a
 ```
 
-### Slicer Python 2.7
+### Slicer
 
 ```bash
 cd Slicer-4.*-linux-amd64/bin
@@ -317,7 +317,7 @@ PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/ /path/to/Slicer-4.*-linux-a
 path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a
 ```
 
-## GUI module
+## Work on GUI module
 
 In the above, we have described about development in the CLI module `diffusionQC/diffusionQC.py`. Here we describe how you can 
 contribute to the GUI module. If you have not installed the required packages on `python-real` yet, 
@@ -332,7 +332,7 @@ Now search `GradQC` in `Slicer>Modules` search icon, and select it from the drop
 able to follow [Visual processing](#visual-processing). However, please make sure to provide a mask.
 
 
-## With SlicerDMRI
+## Create mask using SlicerDMRI
 
 So far we have described development infrastructure with provided mask. If you would like Slicer to generate a mask on its own, 
 you need to install SlicerDMRI extension from the Extension Manager. Then, you can develop without providing a mask:
@@ -340,6 +340,9 @@ you need to install SlicerDMRI extension from the Extension Manager. Then, you c
 * CLI module
 
 > path/to/Slicer --launch python-real path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -a
+
+If you would like the software to create a mask, you must use Slicer `python-real`. 
+Independent Python 2.7 can not be used in this task.
 
 * GUI module
 
