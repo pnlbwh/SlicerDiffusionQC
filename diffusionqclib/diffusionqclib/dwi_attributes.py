@@ -1,10 +1,19 @@
 # Return headers, mri data, axis index along which gradients are listed, axialViewAxis, b-value, gradient directions
 import nrrd
 import numpy as np
+from nhdr_write import nhdr_write
+import os
 
-def dwi_attributes(file_name):
-
-    # TODO: Extend for other dwi formats
+def dwi_attributes(file_name, inPrefix):
+    
+    # If executed from Slicer GUI, the following conversion is already done in SlicerDiffusionQC/GradQC.py
+    if '.nii' in file_name:
+        nhdr= inPrefix+'.nhdr'
+        if not os.path.exists(nhdr): 
+            nhdr_write(file_name, inPrefix+'.bval', inPrefix+'.bvec', nhdr)
+        file_name= nhdr
+    
+    
     dwi= nrrd.read(file_name)
 
     hdr= dwi[1] # header file
@@ -33,3 +42,4 @@ def dwi_attributes(file_name):
 
 
     return hdr, mri, grad_axis, axialViewAxis, b_value, gradients
+

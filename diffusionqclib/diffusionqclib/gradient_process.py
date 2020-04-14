@@ -3,6 +3,7 @@ import os, sys
 
 import time
 import multiprocessing
+from plumbum import local
 
 import nrrd
 import warnings
@@ -19,7 +20,7 @@ percentage = 0.20  # For discretizing scaled b values
 group = [50, 800]  # For separating lower b values
 T = 400  # Number of non zero values in the mask for the corresponding slice to take into account
 
-def load_mask(mask, dwi, prefix, directory):
+def load_mask(mask, dwi, outPrefix):
 
     if mask is None:
 
@@ -29,8 +30,8 @@ def load_mask(mask, dwi, prefix, directory):
         import distutils.spawn
         from subprocess import check_output
 
-        mask= os.path.join(directory, prefix+'_mask'+'.nrrd')
-        bse= os.path.join(directory, prefix+'_bse'+'.nrrd')
+        mask= outPrefix+ '_mask.nrrd'
+        bse= outPrefix+ '_bse.nrrd'
 
         masking_cli = distutils.spawn.find_executable("DiffusionWeightedVolumeMasking")
 
@@ -193,8 +194,16 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     # Global definitions, attributes shared among functions and processes
     global mri, M, grad_axis, slice_axis, totalGradients, visualMode
     visualMode= not autoMode
-
-    hdr, mri, grad_axis, slice_axis, b_value, gradients = dwi_attributes(dwiPath)
+    
+    # Determine outPrefix
+    if outDir is None:
+        outDir = dwiPath.dirname
+    local.path(outDir).mkdir()
+    
+    inPrefix= os.path.splitext(os.path.splitext(dwiPath)[0])[0]
+    outPrefix= os.path.join(outDir, os.path.basename(inPrefix))
+    
+    hdr, mri, grad_axis, slice_axis, b_value, gradients = dwi_attributes(dwiPath._path, inPrefix)
     totalGradients = gradients.shape[0]
 
     print("\n\nInput image loaded ...\n\n")
@@ -204,18 +213,8 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
         sys.stdout.flush()
 
 
-    # Determine prefix and directory
-    if outDir is None:
-        directory = os.path.dirname(os.path.abspath(dwiPath))
-    else:
-        directory = outDir
-        if not os.path.exists(directory):
-            os.mkdir(directory)
-
-    prefix = os.path.basename(os.path.splitext(dwiPath)[0])
-
     # Load/create mask
-    M = load_mask(maskPath, dwiPath, prefix, directory)
+    M = load_mask(maskPath, dwiPath, outPrefix)
     print("\n\nMask loaded ...\n\n")
     if visualMode:
         # 10% work done
@@ -307,4 +306,5 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
     # Save QC results
     # Pass prefix and directory to saveResults()
-    saveResults(prefix, directory, good_bad, S, confidence, scaled_b_values, hdr, mri, grad_axis, autoMode)
+    saveResults(dwiPath._path, outPrefix, good_bad, S, confidence, scaled_b_values, hdr, mri, grad_axis, autoMode)
+
