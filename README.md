@@ -123,16 +123,19 @@ ii) From the command line, you can test as follows:
 
 ii) (Optional) You can clone the repository and run test as follows:
 
+    # Linux/MAC
     git clone https://github.com/pnlbwh/SlicerDiffusionQC.git
     cd SlicerDiffusionQC
     path/to/Slicer --launch python-real Test/run_test.py
-
+    
+    # Windows Powershell
+    path\to\Slicer-4.*\Slicer.exe --launch python-real .\Test\run_test.py | more
 
 `SlicerDiffusionQC/Test/Baseline` contains reference results.
 If installation is successful, the above command will create some files in a temporary directory.
 Follow STDOUT to see success.
 
-*You need to have `git lfs` set up on your machine (run_test.py makes use of it):
+**NOTE** You need to have `git lfs` set up on your machine (`run_test.py` makes use of it):
 
 [Download](https://git-lfs.github.com/) Git command line extension
 
@@ -140,7 +143,6 @@ Follow STDOUT to see success.
     PREFIX=$HOME ./install.sh
     export PATH=$PATH:$HOME/bin/
     git lfs install
-
 
 
 # Automatic processing
@@ -192,7 +194,8 @@ Saves `inputPrefix_QC.npy, inputPrefix_confidence.npy, and inputPrefix_KLdiv.npy
 is selected, the results are saved as `inputPrefix_modified.nrrd` and `inputPrefix_QC.csv`.
 
 
-If mask is not available, keep the `Input Volume Mask` field empty and check `Create the mask`. Then, `inputPrefix_bse.nrrd` and `inputPrefix_mask.nrrd` are created.
+If mask is not available, keep the `Input Volume Mask` field empty and check `Create the mask`. 
+Then, `inputPrefix_bse.nrrd` and `inputPrefix_mask.nrrd` are created.
 
 
 The following are run modes from [GUI](GradQC/GradQC.py):
@@ -319,8 +322,14 @@ exit()
 Then
 
 ```bash
+# Linux/MAC
 PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/ /path/to/Slicer-4.*-linux-amd64/Slicer/bin/python-real \
 path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a
+
+# Windows PowerShell
+$Env:PYTHONPATH+="path\to\SlicerDiffusionQC\diffusionqclib"
+path\to\Slicer-4.*\Slicer.exe --launch python-real path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py \
+-o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a | more
 ```
 
 ## Work on GUI module
