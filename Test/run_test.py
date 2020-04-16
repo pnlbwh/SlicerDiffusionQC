@@ -4,6 +4,7 @@ import numpy as np
 import os, tempfile
 import nrrd
 import subprocess
+from plumbum import local
 
 eps = 2.2204e-16
 
@@ -42,7 +43,7 @@ def main():
         print(tmpdir)
 
         # run test case
-        process(os.path.join(REFDIR, case+'.nrrd'), outDir=tmpdir) 
+        process(local.path(REFDIR).join(case+'.nrrd'), outDir=tmpdir)
 
 
         # load reference results
