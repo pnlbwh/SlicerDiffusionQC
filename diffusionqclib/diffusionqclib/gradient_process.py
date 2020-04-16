@@ -20,6 +20,11 @@ percentage = 0.20  # For discretizing scaled b values
 group = [50, 800]  # For separating lower b values
 T = 400  # Number of non zero values in the mask for the corresponding slice to take into account
 
+try:
+    dqc_temp_file= os.path.join(os.environ['HOME'],'tmp_dqc.npy')
+except:
+    dqc_temp_file= os.path.join(os.environ['HOMEPATH'],'tmp_dqc.npy')
+
 def load_mask(mask, dwi, outPrefix):
 
     if mask is None:
@@ -123,6 +128,8 @@ def find_b_shell(scaled_b_values):
 
 def grad_process(grad_id):
 
+    mri, M, grad_axis, slice_axis, totalGradients, visualMode= np.load(dqc_temp_file)
+
     print("Processing gradient {}/{} ...".format(grad_id+1,totalGradients)) # counter may be different from grad_id+1
     if visualMode:
         # Each gradient contributes (70/totalGradients) % work
@@ -192,7 +199,6 @@ def grad_process(grad_id):
 def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
     # Global definitions, attributes shared among functions and processes
-    global mri, M, grad_axis, slice_axis, totalGradients, visualMode
     visualMode= not autoMode
     
     # Determine outPrefix
@@ -214,7 +220,7 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
 
     # Load/create mask
-    M = load_mask(maskPath, dwiPath, outPrefix)
+    M = load_mask(maskPath, dwiPath._path, outPrefix)
     print("\n\nMask loaded ...\n\n")
     if visualMode:
         # 10% work done
@@ -224,6 +230,8 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     start_time = time.time()
 
     print("\n\nCalculating KL divergences ...\n\n")
+
+    np.save(dqc_temp_file, [mri, M, grad_axis, slice_axis, totalGradients, visualMode])
     pool = multiprocessing.Pool()  # Use all available cores, otherwise specify the number you want as an argument
 
     res = pool.map_async(grad_process, range(mri.shape[grad_axis]))
@@ -234,6 +242,8 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
 
     pool.close()
     pool.join()
+
+    os.remove(dqc_temp_file)
 
     S = np.array(S)
 

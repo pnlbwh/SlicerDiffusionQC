@@ -26,6 +26,8 @@ Table of Contents
       * [Work on GUI module](#work-on-gui-module)
       * [Create mask using SlicerDMRI](#create-mask-using-slicerdmri)
    * [Submit issues](#submit-issues)
+   * [Troubleshooting](#troubleshooting)
+   
 
 Table of Contents created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -121,16 +123,19 @@ ii) From the command line, you can test as follows:
 
 ii) (Optional) You can clone the repository and run test as follows:
 
+    # Linux/MAC
     git clone https://github.com/pnlbwh/SlicerDiffusionQC.git
     cd SlicerDiffusionQC
     path/to/Slicer --launch python-real Test/run_test.py
-
+    
+    # Windows Powershell
+    path\to\Slicer-4.*\Slicer.exe --launch python-real .\Test\run_test.py | more
 
 `SlicerDiffusionQC/Test/Baseline` contains reference results.
 If installation is successful, the above command will create some files in a temporary directory.
 Follow STDOUT to see success.
 
-*You need to have `git lfs` set up on your machine (run_test.py makes use of it):
+**NOTE** You need to have `git lfs` set up on your machine (`run_test.py` makes use of it):
 
 [Download](https://git-lfs.github.com/) Git command line extension
 
@@ -138,7 +143,6 @@ Follow STDOUT to see success.
     PREFIX=$HOME ./install.sh
     export PATH=$PATH:$HOME/bin/
     git lfs install
-
 
 
 # Automatic processing
@@ -190,7 +194,8 @@ Saves `inputPrefix_QC.npy, inputPrefix_confidence.npy, and inputPrefix_KLdiv.npy
 is selected, the results are saved as `inputPrefix_modified.nrrd` and `inputPrefix_QC.csv`.
 
 
-If mask is not available, keep the `Input Volume Mask` field empty and check `Create the mask`. Then, `inputPrefix_bse.nrrd` and `inputPrefix_mask.nrrd` are created.
+If mask is not available, keep the `Input Volume Mask` field empty and check `Create the mask`. 
+Then, `inputPrefix_bse.nrrd` and `inputPrefix_mask.nrrd` are created.
 
 
 The following are run modes from [GUI](GradQC/GradQC.py):
@@ -292,7 +297,11 @@ Install [Python 2.7](https://docs.conda.io/en/latest/miniconda.html) with the fo
 Then
 
 ```bash
+# Linux/MAC
 export PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/
+# Windows PowerShell
+$Env:PYTHONPATH+="path\to\SlicerDiffusionQC\diffusionqclib"
+
 ~/miniconda2/bin/python \
 path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a
 ```
@@ -313,14 +322,27 @@ exit()
 Then
 
 ```bash
+# Linux/MAC
 PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/ /path/to/Slicer-4.*-linux-amd64/Slicer/bin/python-real \
 path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py -o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a
+
+# Windows PowerShell
+$Env:PYTHONPATH+="path\to\SlicerDiffusionQC\diffusionqclib"
+path\to\Slicer-4.*\Slicer.exe --launch python-real path/to/SlicerDiffusionQC/diffusionQC/diffusionQC.py \
+-o /tmp -i dwi_nifti_or_nrrd -m mask_nifti_or_nrrd -a | more
 ```
 
 ## Work on GUI module
 
 In the above, we have described about development in the CLI module `diffusionQC/diffusionQC.py`. Here we describe how you can 
-contribute to the GUI module. If you have not installed the required packages on `python-real` yet, 
+contribute to the GUI module. Firstly, we need to append `path/to/SlicerDiffusionQC/diffusionqclib/` to `PYTHONPATH`:
+
+    # Linux/MAC
+    export PYTHONPATH=path/to/SlicerDiffusionQC/diffusionqclib/
+    # Windows PowerShell
+    $Env:PYTHONPATH+="path\to\SlicerDiffusionQC\diffusionqclib"
+    
+Then, launch `/path/to/Slicer-4.*/Slicer` from the same terminal. If you have not installed the required packages on `python-real` yet, 
 you can do it now from `Python Interactor` on Slicer GUI. 
 Now, add the following path to `Slicer>Edit>Application Settings>Modules>Additional module paths`:
 
@@ -348,6 +370,21 @@ Independent Python 2.7 can not be used in this task.
 
 You can check `Create a mask` box upon loading `GradQC`.
     
+
+# Troubleshooting
+
+1. On Windows Git Bash,
+    
+    
+    cd /path/to/SlicerDiffusionQC
+    export PYTHONPATH=`pwd`/diffusionqclib
+    ~/Downloads/Slicer\ 4.10.2/Slicer.exe --launch python-real Test/run_test.py
+    
+does not seem to work but the following does:
+    
+    cd /path/to/SlicerDiffusionQC
+    PYTHONPATH=`pwd`/diffusionqclib ~/Downloads/Slicer\ 4.10.2/Slicer.exe --launch python-real Test/run_test.py
+
 
 # Submit issues
 
