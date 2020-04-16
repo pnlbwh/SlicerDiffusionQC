@@ -243,6 +243,8 @@ def process(dwiPath, maskPath=None, outDir=None, autoMode=True):
     pool.close()
     pool.join()
 
+    os.remove(dqc_temp_file)
+
     S = np.array(S)
 
     # Calculating scaled b values
