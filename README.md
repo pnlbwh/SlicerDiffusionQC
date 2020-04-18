@@ -373,18 +373,19 @@ You can check `Create a mask` box upon loading `GradQC`.
 
 # Troubleshooting
 
-1. On Windows Git Bash,
-    
-    
-    cd /path/to/SlicerDiffusionQC
-    export PYTHONPATH=`pwd`/diffusionqclib
-    ~/Downloads/Slicer\ 4.10.2/Slicer.exe --launch python-real Test/run_test.py
-    
+* On Windows Git Bash,
+```    
+cd /path/to/SlicerDiffusionQC
+export PYTHONPATH=`pwd`/diffusionqclib
+~/Downloads/Slicer\ 4.10.2/Slicer.exe --launch python-real Test/run_test.py
+```
+ 
 does not seem to work but the following does:
     
     cd /path/to/SlicerDiffusionQC
     PYTHONPATH=`pwd`/diffusionqclib ~/Downloads/Slicer\ 4.10.2/Slicer.exe --launch python-real Test/run_test.py
 
+* `import numpy` error on Win and MAC can be solved following https://github.com/pnlbwh/SlicerDiffusionQC/issues/38
 
 # Submit issues
 
