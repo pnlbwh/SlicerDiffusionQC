@@ -15,7 +15,7 @@ file(TO_NATIVE_PATH ${python_packages_DIR} python_packages_DIR_NATIVE_DIR)
 set(_install_deps COMMAND ${CMAKE_COMMAND}
     -E env
     PYTHONNOUSERSITE=1
-    ${PYTHON_EXECUTABLE} -m pip install numpy plumbum nibabel pynrrd
+    ${PYTHON_EXECUTABLE} -m pip install plumbum nibabel pynrrd
                                 --prefix "${python_packages_DIR_NATIVE_DIR}" --upgrade
     )
 
