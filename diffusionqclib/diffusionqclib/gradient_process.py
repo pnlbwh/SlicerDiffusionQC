@@ -21,9 +21,9 @@ group = [50, 800]  # For separating lower b values
 T = 400  # Number of non zero values in the mask for the corresponding slice to take into account
 
 try:
-    dqc_temp_file= os.path.join(os.environ['HOME'],'tmp_dqc.npy')
+    dqc_temp_file= os.path.join(os.environ['HOME'],'tmp_dqc_{}.npy'.format(os.getpid()))
 except:
-    dqc_temp_file= os.path.join(os.environ['HOMEPATH'],'tmp_dqc.npy')
+    dqc_temp_file= os.path.join(os.environ['HOMEPATH'],'tmp_dqc_{}.npy'.format(os.getpid()))
 
 def load_mask(mask, dwi, outPrefix):
 
