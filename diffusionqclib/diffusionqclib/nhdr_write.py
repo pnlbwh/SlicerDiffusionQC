@@ -25,13 +25,7 @@ def matrix_string(A):
     
 def find_mf(F):
 
-    FFT= np.matmul(F,F.T)
-    lam, V= np.linalg.eig(FFT)
-    FFTsqrt= np.matmul(np.matmul(V,np.diag(np.sqrt(lam))),V.T)
-    R= np.matmul(FFTsqrt,F)
-
-    # get rid of scaling, normalize each column
-    R/=np.linalg.norm(R, axis=0)
+    R= F/np.linalg.norm(F,axis=0)
 
     return R
 
@@ -98,7 +92,7 @@ type: {}\ndimension: {}\nspace: right-anterior-superior'.format(numpy_to_nrrd_dt
     print('encoding: {}'.format(encoding))
     print('space units: "mm" "mm" "mm"')
 
-    spc_orig = hdr.get_qform()[0:3, 3]
+    spc_orig = hdr.get_best_affine()[0:3, 3]
     print('space origin: ({})'.format((',').join(str(x) for x in spc_orig)))
     print('data file: {}'.format(os.path.basename(nifti)))
 
