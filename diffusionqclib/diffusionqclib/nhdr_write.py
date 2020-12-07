@@ -33,7 +33,7 @@ def find_mf(F):
     # get rid of scaling, normalize each column
     R/=np.linalg.norm(R, axis=0)
 
-    return R.T
+    return R
 
 def nhdr_write(nifti, bval, bvec, nhdr):
 
@@ -124,7 +124,7 @@ type: {}\ndimension: {}\nspace: right-anterior-superior'.format(numpy_to_nrrd_dt
         if bval and bvec:
 
             mf = find_mf(spc_dir)
-            print('measurement frame: {}'.format(matrix_string(mf)))
+            print('measurement frame: {}'.format(matrix_string(mf.T)))
 
             bvecs = read_bvecs(bvec, assume_normed= False)
             bvals = read_bvals(bval)
