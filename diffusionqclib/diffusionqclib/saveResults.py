@@ -7,15 +7,15 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=FutureWarning)
     import nibabel as nib
 
-from bval_bvec_io import read_bvals, read_bvecs, write_bvals, write_bvecs
-from nhdr_write import nhdr_write
+from .bval_bvec_io import read_bvals, read_bvecs, write_bvals, write_bvecs
+from .nhdr_write import nhdr_write
 
 def saveDecisions(outPrefix, deletion, confidence, bvals):
 
     fqc = open(outPrefix+'_QC.csv', "w")
     fcon = open(outPrefix+'_confidence.csv', "w")
-    fqc.write('Gradient #, Pass 1\Fail 0, b value\n')
-    fcon.write('Gradient #, Sure 1\Unsure 0, b value\n')
+    fqc.write('Gradient #, Pass 1/Fail 0, b value\n')
+    fcon.write('Gradient #, Sure 1/Unsure 0, b value\n')
     for i in range(len(deletion)):
         fqc.write(str(i) + ',' + str(deletion[i]) + ','+ str(bvals[i])+'\n')
         fcon.write(str(i) + ',' + str(confidence[i]) + ','+ str(bvals[i])+'\n')
