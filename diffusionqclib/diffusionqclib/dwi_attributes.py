@@ -1,7 +1,7 @@
 # Return headers, mri data, axis index along which gradients are listed, axialViewAxis, b-value, gradient directions
 import nrrd
 import numpy as np
-from nhdr_write import nhdr_write
+from .nhdr_write import nhdr_write
 import os
 
 def dwi_attributes(file_name, inPrefix):

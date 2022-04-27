@@ -13,7 +13,7 @@ PRECISION= 17
 # np.set_printoptions(precision= PRECISION, suppress= True, floatmode= 'maxprec')
 np.set_printoptions(precision= PRECISION, suppress= True)
 
-from bval_bvec_io import read_bvecs, read_bvals, bvec_scaling
+from .bval_bvec_io import read_bvecs, read_bvals, bvec_scaling
 
 def matrix_string(A):
     # A= np.array(A)

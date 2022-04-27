@@ -2,9 +2,6 @@ import os, sys
 import vtk, qt, ctk, slicer, mrml
 from slicer.ScriptedLoadableModule import *
 
-from gradqclib.slicerUserInteraction import slicerGUI
-from diffusionqclib.nhdr_write import nhdr_write
-
 #
 # GradQC
 #
@@ -286,7 +283,8 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
 
   def onSelectInput(self):
-    
+    from diffusionqclib.nhdr_write import nhdr_write
+
     inPrefix= os.path.splitext(os.path.splitext(self.inputSelector.currentPath)[0])[0]
     file_name= self.inputSelector.currentPath 
     if '.nii' in self.inputSelector.currentPath:
@@ -389,6 +387,8 @@ class GradQCWidget(ScriptedLoadableModuleWidget):
 
 
   def GUI(self):
+
+      from gradqclib.slicerUserInteraction import slicerGUI
 
       # If in autoMode, don't call the Slicer GUI below, negative logic used for self.autoMode
       if self.autoMode:  # self.autoMode = True when check box checked

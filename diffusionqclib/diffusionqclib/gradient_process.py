@@ -11,8 +11,8 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=FutureWarning)
     import nibabel as nib
 
-from dwi_attributes import dwi_attributes
-from saveResults import saveResults
+from .dwi_attributes import dwi_attributes
+from .saveResults import saveResults
 
 POINTS = 50 # For KDE estimation
 eps = 2.2204e-16  # For preventing log( ) to be -inf
