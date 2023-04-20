@@ -11,11 +11,16 @@ set(EXTENSION_DESCRIPTION "A Slicer module for automated and interactive quality
 set(EXTENSION_ICONURL "https://raw.githubusercontent.com/pnlbwh/SlicerDiffusionQC/master/Misc/DiffusionQC-icon-128x128.png")
 set(EXTENSION_SCREENSHOTURLS "https://github.com/pnlbwh/SlicerDiffusionQC/raw/master/Misc/DiffusionQC-screenshot.jpg")
 set(EXTENSION_DEPENDS "SlicerDMRI") # Specified as a space separated string, a list or 'NA' if any
+set(EXTENSION_BUILD_SUBDIRECTORY inner-build)
 
 #-----------------------------------------------------------------------------
 # Extension dependencies
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
+mark_as_superbuild(Slicer_DIR)
+
+find_package(Git REQUIRED)
+mark_as_superbuild(GIT_EXECUTABLE)
 
 #-----------------------------------------------------------------------------
 # SuperBuild setup
