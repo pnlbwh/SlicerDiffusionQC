@@ -4,12 +4,12 @@ project(DiffusionQC)
 
 #-----------------------------------------------------------------------------
 # Extension meta-information
-set(EXTENSION_HOMEPAGE "https://www.github.com/pnlbwh/SlicerDiffusionQC")
-set(EXTENSION_CATEGORY "Diffusion.Process")
-set(EXTENSION_CONTRIBUTORS "Tashrif Billah and Isaiah Norton, Brigham and Women's Hospital (Harvard Medical School)")
-set(EXTENSION_DESCRIPTION "A Slicer module for automated and interactive quality checking of diffusion weighted MRI.")
-set(EXTENSION_ICONURL "https://raw.githubusercontent.com/pnlbwh/SlicerDiffusionQC/master/Misc/DiffusionQC-icon-128x128.png")
-set(EXTENSION_SCREENSHOTURLS "https://github.com/pnlbwh/SlicerDiffusionQC/raw/master/Misc/DiffusionQC-screenshot.jpg")
+set(EXTENSION_HOMEPAGE "https://github.com/pnlbwh/SlicerDiffusionQC")
+set(EXTENSION_CATEGORY "Diffusion")
+set(EXTENSION_CONTRIBUTORS "Tashrif Billah (Brigham & Women's Hospital), Isaiah Norton (Brigham & Women's Hospital), Yogesh Rathi (Brigham & Women's Hospital), Sylvain Bouix (Brigham & Women's Hospital)")
+set(EXTENSION_DESCRIPTION "DiffusionQC provides a quality-checking algorithm for diffusion-weighted MRIs, paired with an interactive graphical review tool.")
+set(EXTENSION_ICONURL "https://github.com/pnlbwh/SlicerDiffusionQC/raw/master/Misc/DiffusionQC-icon-128x128.png")
+set(EXTENSION_SCREENSHOTURLS "https://raw.githubusercontent.com/pnlbwh/SlicerDiffusionQC/master/Misc/DiffusionQC-screenshot.png")
 set(EXTENSION_DEPENDS "SlicerDMRI") # Specified as a space separated string, a list or 'NA' if any
 
 #-----------------------------------------------------------------------------
