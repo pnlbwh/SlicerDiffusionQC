@@ -11,11 +11,16 @@ set(EXTENSION_DESCRIPTION "DiffusionQC provides a quality-checking algorithm for
 set(EXTENSION_ICONURL "https://github.com/pnlbwh/SlicerDiffusionQC/raw/master/Misc/DiffusionQC-icon-128x128.png")
 set(EXTENSION_SCREENSHOTURLS "https://raw.githubusercontent.com/pnlbwh/SlicerDiffusionQC/master/Misc/DiffusionQC-screenshot.png")
 set(EXTENSION_DEPENDS "SlicerDMRI") # Specified as a space separated string, a list or 'NA' if any
+set(EXTENSION_BUILD_SUBDIRECTORY inner-build)
 
 #-----------------------------------------------------------------------------
 # Extension dependencies
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
+mark_as_superbuild(Slicer_DIR)
+
+find_package(Git REQUIRED)
+mark_as_superbuild(GIT_EXECUTABLE)
 
 #-----------------------------------------------------------------------------
 # SuperBuild setup
